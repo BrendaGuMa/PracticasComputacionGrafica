@@ -283,6 +283,16 @@ int main() {
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
+		// CUBO 6
+		model = glm::mat4(1);
+		model = glm::translate(model, glm::vec3(-0.1f, 2.8f, 0.0f));
+		model = glm::rotate(model, 2.6f, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, -0.5f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.3f, 1.3f, 1.3f));
+
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
 		glBindVertexArray(0);
 
 		// Swap the screen buffers
