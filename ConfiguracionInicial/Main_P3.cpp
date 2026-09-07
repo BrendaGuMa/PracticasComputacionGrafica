@@ -1,6 +1,6 @@
 //Práctica#3
 //Guerra Marcelino Brenda Paola
-//Fecha de entrega: 01 de septiembre de 2026
+//Fecha de entrega: 06 de septiembre de 2026
 //Número de cuenta: 319021068
 
 #include<iostream>
@@ -34,7 +34,7 @@ int main() {
 
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Previo#3 - Brenda Guerra", nullptr, nullptr);
+	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Práctica#3 - Brenda Guerra", nullptr, nullptr);
 
 	int screenWidth, screenHeight;
 
@@ -254,13 +254,14 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// CUBO 3
-		/*model = glm::mat4(1);
-		model = glm::translate(model, glm::vec3(-4.0f, -1.0f, 0.0f));
-		model = glm::rotate(model, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.8f, 1.2f, 0.8f));
+		model = glm::mat4(1);
+		model = glm::translate(model, glm::vec3(0.0f, -0.2f, 0.0f));
+		model = glm::rotate(model, -0.8f, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, -0.9f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.8f, 1.8f, 1.8f));
 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);*/
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		glBindVertexArray(0);
 
