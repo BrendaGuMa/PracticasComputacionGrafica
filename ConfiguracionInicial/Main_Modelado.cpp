@@ -201,13 +201,43 @@ int main() {
 	
 
 		glBindVertexArray(VAO);
-	
-	    model = glm::mat4(1.0f);
+		
+		// Parte Superior
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(2.0f, 0.1f, 1.5f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.5f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
 
-				
+		// Pata 1
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.12f, 1.0f, 0.12f));
+		model = glm::translate(model, glm::vec3(5.5f, -0.5f, 4.5f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// Pata 2
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.12f, 1.0f, 0.12f));
+		model = glm::translate(model, glm::vec3(-5.5f, -0.5f, 4.5f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// Pata 3
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.12f, 1.0f, 0.12f));
+		model = glm::translate(model, glm::vec3(-5.5f, -0.5f, -4.5f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// Pata 4
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.12f, 1.0f, 0.12f));
+		model = glm::translate(model, glm::vec3(5.5f, -0.5f, -4.5f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		glBindVertexArray(0);
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
@@ -225,21 +255,21 @@ int main() {
 	 if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)  //GLFW_RELEASE
 		 glfwSetWindowShouldClose(window, true);
 	 if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		 movX += 0.08f;
+		 movX += 0.01f; //08
 	 if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		 movX -= 0.08f;
+		 movX -= 0.01f;
 	 if (glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
-		 movY += 0.08f;
+		 movY += 0.01f;
 	 if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
-		 movY -= 0.08f;
+		 movY -= 0.01f;
 	 if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		 movZ -= 0.08f;
+		 movZ -= 0.01f;
 	 if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		 movZ += 0.08f;
+		 movZ += 0.01f;
 	 if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		 rot += 0.4f;
+		 rot += 0.1f; //04
 	 if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-		 rot -= 0.4f;
+		 rot -= 0.1f;
  }
 
 
