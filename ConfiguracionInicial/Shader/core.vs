@@ -9,9 +9,10 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 transform;
 
+uniform vec3 objectColor; // Agregado para los colores
 
 void main()
 {
     gl_Position =projection*view*model*vec4(position, 1.0f);
-    ourColor = color;
+    ourColor = objectColor; // Agregado para los colores
 }

@@ -1,6 +1,6 @@
-//Previo#4
+//Práctica#4
 //Guerra Marcelino Brenda Paola
-//Fecha de entrega: 08 de septiembre de 2026
+//Fecha de entrega: 13 de septiembre de 2026
 //Número de cuenta: 319021068
 
 #include<iostream>
@@ -26,7 +26,7 @@ void Inputs(GLFWwindow *window);
 const GLint WIDTH = 800, HEIGHT = 600;
 float movX=0.0f;
 float movY=0.0f;
-float movZ=-5.0f;
+float movZ=-15.0f;
 float rot = 0.0f;
 int main() {
 	glfwInit();
@@ -39,7 +39,7 @@ int main() {
 
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Previo#4 - Brenda Guerra", nullptr, nullptr);
+	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Práctica#4 - Brenda Guerra", nullptr, nullptr);
 
 	int screenWidth, screenHeight;
 
@@ -194,6 +194,7 @@ int main() {
 		GLint viewLoc = glGetUniformLocation(ourShader.Program, "view");
 		GLint projecLoc = glGetUniformLocation(ourShader.Program, "projection");
 
+		GLint colorLoc = glGetUniformLocation(ourShader.Program, "objectColor"); // Agregado para los colores
 
 		glUniformMatrix4fv(projecLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -202,41 +203,23 @@ int main() {
 
 		glBindVertexArray(VAO);
 		
-		// Parte Superior
+		// 
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(2.0f, 0.1f, 1.5f));
-		model = glm::translate(model, glm::vec3(0.0f, 0.5f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 1.0f, 0.0f, 0.0f);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		// Pata 1
-		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.12f, 1.0f, 0.12f));
-		model = glm::translate(model, glm::vec3(5.5f, -0.5f, 4.5f));
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		// Pata 2
-		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.12f, 1.0f, 0.12f));
-		model = glm::translate(model, glm::vec3(-5.5f, -0.5f, 4.5f));
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		// Pata 3
-		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.12f, 1.0f, 0.12f));
-		model = glm::translate(model, glm::vec3(-5.5f, -0.5f, -4.5f));
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		// Pata 4
-		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.12f, 1.0f, 0.12f));
-		model = glm::translate(model, glm::vec3(5.5f, -0.5f, -4.5f));
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
+		// Modelo para color ejemplo
+		//model = glm::mat4(1.0f);
+		//model = glm::translate(model, glm::vec3(-1.5f, 0.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		//glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		//glUniform3f(colorLoc, 0.0f, 0.5f, 0.8f); //Agregado para los volores
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
+		
+		// Final
 		glBindVertexArray(0);
 
 		// Swap the screen buffers
