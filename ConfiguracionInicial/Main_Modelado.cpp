@@ -289,6 +289,13 @@ int main() {
 		glUniform3f(colorLoc, 0.1f, 0.4f, 0.8f);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, -6.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.4f, 0.7f, 0.8f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
 		//Cuerpo 
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, -11.0f, 0.0f));
@@ -386,6 +393,99 @@ int main() {
 		model = glm::scale(model, glm::vec3(7.0f, 1.0f, 1.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3f(colorLoc, 0.55f, 0.8f, 0.9f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, -15.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(9.0f, 1.0f, 6.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.4f, 0.7f, 0.8f);
+		glDrawArrays(GL_TRIANGLES, 0, 36); 
+
+		//Brazo Izquierdo
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(5.0f, -11.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 5.0f, 5.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.55f, 0.8f, 0.9f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(6.0f, -11.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 2.0f, 2.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 1.0f, 0.0f, 0.0f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(6.0f, -11.0f, 2.5f));
+		model = glm::scale(model, glm::vec3(1.0f, 2.0f, 3.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.25f, 0.5f, 0.6f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(6.0f, -11.0f, 4.5f));
+		model = glm::scale(model, glm::vec3(1.0f, 4.0f, 1.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.9f, 0.9f, 0.9f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(6.0f, -9.5f, 5.5f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.9f, 0.9f, 0.9f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(6.0f, -12.5f, 5.5f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.9f, 0.9f, 0.9f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		//Brazo Derecho
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-5.0f, -11.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 5.0f, 5.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.55f, 0.8f, 0.9f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-6.0f, -11.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 2.0f, 2.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 1.0f, 0.0f, 0.0f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-6.0f, -11.0f, 2.5f));
+		model = glm::scale(model, glm::vec3(1.0f, 2.0f, 3.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.25f, 0.5f, 0.6f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-6.0f, -11.0f, 4.5f));
+		model = glm::scale(model, glm::vec3(1.0f, 4.0f, 1.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.9f, 0.9f, 0.9f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-6.0f, -9.5f, 5.5f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.9f, 0.9f, 0.9f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-6.0f, -12.5f, 5.5f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.9f, 0.9f, 0.9f);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// Final
