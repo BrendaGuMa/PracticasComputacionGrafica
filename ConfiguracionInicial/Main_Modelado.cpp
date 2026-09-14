@@ -488,6 +488,49 @@ int main() {
 		glUniform3f(colorLoc, 0.9f, 0.9f, 0.9f);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
+		//Piernas
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(2.0f, -16.5f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.25f, 0.5f, 0.6f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-2.0f, -16.5f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.25f, 0.5f, 0.6f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(2.0f, -18.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 2.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 1.0f, 0.0f, 0.0f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-2.0f, -18.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 2.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 1.0f, 0.0f, 0.0f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(2.0f, -19.0f, 0.5f));
+		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 3.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.9f, 0.9f, 0.9f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-2.0f, -19.0f, 0.5f));
+		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 3.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3f(colorLoc, 0.9f, 0.9f, 0.9f);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
 		// Final
 		glBindVertexArray(0);
 
