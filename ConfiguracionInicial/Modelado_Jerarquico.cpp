@@ -247,6 +247,16 @@ int main() {
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);//D
 
+		//Model Dedo1 B
+		model = glm::translate(modelTemp, glm::vec3(0.5f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(dedo2), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(0.5f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 0.35f, 0.3f));
+		color = glm::vec3(1.0f, 0.7f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);//E
+
 		glBindVertexArray(0);
 
 		
