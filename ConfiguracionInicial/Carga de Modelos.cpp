@@ -100,6 +100,7 @@ int main( )
     
     // Load models
     Model dog((char*)"Models/RedDog.obj"); // Carga de modelo, línea agregada
+    Model cat((char*)"Models/12221_Cat_v1_l3.obj"); // Nuevo Modelo
     glm::mat4 projection = glm::perspective( camera.GetZoom( ), ( float )SCREEN_WIDTH/( float )SCREEN_HEIGHT, 0.1f, 100.0f );
     
   
@@ -126,15 +127,20 @@ int main( )
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
-        // Draw the loaded model
+        // Perro
         glm::mat4 model(1);
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         dog.Draw(shader); // Línea agregada
 
-        model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f)); // Línea agregada
-        model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f)); // Línea agregada
-        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model)); // Línea agregada
-        dog.Draw(shader); // Línea agregada
+        // Gato
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(360.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        cat.Draw(shader);
 
         // Swap the buffers
         glfwSwapBuffers( window );
