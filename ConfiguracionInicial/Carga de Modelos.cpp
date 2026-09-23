@@ -1,3 +1,8 @@
+//Previo#6
+//Guerra Marcelino Brenda Paola
+//Fecha de entrega: 22 de septiembre de 2026
+//Número de cuenta: 319021068
+
 // Std. Includes
 #include <string>
 
@@ -54,7 +59,7 @@ int main( )
     glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
     
     // Create a GLFWwindow object that we can use for GLFW's functions
-    GLFWwindow *window = glfwCreateWindow( WIDTH, HEIGHT, "Carga de modelos y camara sintetica", nullptr, nullptr );
+    GLFWwindow *window = glfwCreateWindow( WIDTH, HEIGHT, "Previo#6 - Brenda Guerra", nullptr, nullptr );
     
     if ( nullptr == window )
     {
@@ -126,10 +131,10 @@ int main( )
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         dog.Draw(shader); // Línea agregada
 
-        //model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f)); // Línea agregada
-        //model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f)); // Línea agregada
-        //glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model)); // Línea agregada
-        //dog.Draw(shader); // Línea agregada
+        model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f)); // Línea agregada
+        model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f)); // Línea agregada
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model)); // Línea agregada
+        dog.Draw(shader); // Línea agregada
 
         // Swap the buffers
         glfwSwapBuffers( window );
