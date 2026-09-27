@@ -1,6 +1,6 @@
-//Previo#6
+//Práctica#6
 //Guerra Marcelino Brenda Paola
-//Fecha de entrega: 22 de septiembre de 2026
+//Fecha de entrega: 27 de septiembre de 2026
 //Número de cuenta: 319021068
 
 // Std. Includes
@@ -59,7 +59,7 @@ int main( )
     glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
     
     // Create a GLFWwindow object that we can use for GLFW's functions
-    GLFWwindow *window = glfwCreateWindow( WIDTH, HEIGHT, "Previo#6 - Brenda Guerra", nullptr, nullptr );
+    GLFWwindow *window = glfwCreateWindow( WIDTH, HEIGHT, "Práctica#6 - Brenda Guerra", nullptr, nullptr );
     
     if ( nullptr == window )
     {
@@ -100,7 +100,6 @@ int main( )
     
     // Load models
     Model dog((char*)"Models/RedDog.obj"); // Carga de modelo, línea agregada
-    Model cat((char*)"Models/12221_Cat_v1_l3.obj"); // Nuevo Modelo
     glm::mat4 projection = glm::perspective( camera.GetZoom( ), ( float )SCREEN_WIDTH/( float )SCREEN_HEIGHT, 0.1f, 100.0f );
     
   
@@ -131,16 +130,6 @@ int main( )
         glm::mat4 model(1);
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         dog.Draw(shader); // Línea agregada
-
-        // Gato
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(360.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
-
-        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        cat.Draw(shader);
 
         // Swap the buffers
         glfwSwapBuffers( window );
