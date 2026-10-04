@@ -1,6 +1,6 @@
-//Previo#7
+//Práctica#7
 //Guerra Marcelino Brenda Paola
-//Fecha de entrega: 29 de septiembre de 2026
+//Fecha de entrega: 4 de octubre de 2026
 
 #include <iostream>
 #include <cmath>
@@ -46,7 +46,8 @@ glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 // Deltatime
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
 GLfloat lastFrame = 0.0f;  	// Time of last frame
-
+GLfloat rotX = 0.0f; // Agregadp
+GLfloat rotY = 0.0f; // Agregado
 							// The MAIN function, from here we start the application and run the game loop
 int main()
 {
@@ -60,7 +61,7 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Previo 7 - Brenda Guerra", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Práctica#7 - Brenda Guerra", nullptr, nullptr);
 
 	if (nullptr == window)
 	{
@@ -104,19 +105,72 @@ int main()
 	GLfloat vertices[] =
 	{
 		// Positions            // Colors              // Texture Coords
-		-0.5f, -0.5f, 0.0f,    1.0f, 1.0f,1.0f,		  0.0f,0.0f,
-		0.5f, -0.5f, 0.0f,	   1.0f, 1.0f,1.0f,		  1.0f,0.0f,
-		0.5f,  0.5f, 0.0f,     1.0f, 1.0f,1.0f,	      1.0f,1.0f,
-		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f,1.0f,		  0.0f,1.0f,
+		//-0.5f, -0.5f, 0.0f,    1.0f, 1.0f,1.0f,		  0.0f,0.0f,
+		//0.5f, -0.5f, 0.0f,	   1.0f, 1.0f,1.0f,		  1.0f,0.0f,
+		//0.5f,  0.5f, 0.0f,     1.0f, 1.0f,1.0f,	      1.0f,1.0f,
+		//-0.5f,  0.5f, 0.0f,    1.0f, 1.0f,1.0f,		  0.0f,1.0f,
 
-		
+		// Creación del Cubo
+		// FRONT
+		-0.5f, -0.5f,  0.5f,    1.0f, 1.0f, 1.0f,    0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f,
+
+		// BACK
+		 0.5f, -0.5f, -0.5f,    1.0f, 1.0f, 1.0f,    0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f,
+
+		 // LEFT
+		 -0.5f, -0.5f, -0.5f,    1.0f, 1.0f, 1.0f,    0.0f, 0.0f,
+		 -0.5f, -0.5f,  0.5f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f,
+		 -0.5f,  0.5f,  0.5f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+		 -0.5f,  0.5f, -0.5f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f,
+
+		 // RIGHT
+		  0.5f, -0.5f,  0.5f,    1.0f, 1.0f, 1.0f,    0.0f, 0.0f,
+		  0.5f, -0.5f, -0.5f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f,
+		  0.5f,  0.5f, -0.5f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+		  0.5f,  0.5f,  0.5f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f,
+
+		  // TOP
+		  -0.5f,  0.5f,  0.5f,    1.0f, 1.0f, 1.0f,    0.0f, 0.0f,
+		   0.5f,  0.5f,  0.5f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f,
+		   0.5f,  0.5f, -0.5f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+		  -0.5f,  0.5f, -0.5f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f,
+
+		  // BOTTOM
+		  -0.5f, -0.5f, -0.5f,    1.0f, 1.0f, 1.0f,    0.0f, 0.0f,
+		   0.5f, -0.5f, -0.5f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f,
+		   0.5f, -0.5f,  0.5f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+		  -0.5f, -0.5f,  0.5f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f
 	};
 
 	GLuint indices[] =
 	{  // Note that we start from 0!
-		0,1,3,
-		1,2,3
-	
+		//0,1,3,
+		//1,2,3
+		
+		// Nuevos índices
+		0, 1, 2,
+		2, 3, 0,
+
+		4, 5, 6,
+		6, 7, 4,
+
+		8, 9, 10,
+		10, 11, 8,
+
+		12, 13, 14,
+		14, 15, 12,
+
+		16, 17, 18,
+		18, 19, 16,
+
+		20, 21, 22,
+		22, 23, 20
 	};
 
 	// First, set the container's VAO (and VBO)
@@ -155,13 +209,13 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	// Diffuse map
-	image = stbi_load("images/BubbleSimple.png", &textureWidth, &textureHeight, &nrChannels,0);
+	image = stbi_load("images/dado.png", &textureWidth, &textureHeight, &nrChannels,0);
 	glBindTexture(GL_TEXTURE_2D, texture1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	if (image)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
@@ -194,6 +248,11 @@ int main()
 		view = camera.GetViewMatrix();
 		glm::mat4 projection = glm::perspective(camera.GetZoom(), (GLfloat)SCREEN_WIDTH / (GLfloat)SCREEN_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 model(1);
+
+		model = glm::rotate(model, glm::radians(rotX), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(rotY), glm::vec3(0.0f, 1.0f, 0.0f));
+
+
 		// Get location objects for the matrices on the lamp shader (these could be different on a different shader)
 		// Get the uniform locations
 		GLint modelLoc = glGetUniformLocation(lampShader.Program, "model");
@@ -210,7 +269,7 @@ int main()
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		// Draw the light object (using light's vertex attributes)
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
 		// Swap the screen buffers
@@ -248,6 +307,26 @@ void DoMovement()
 	if (keys[GLFW_KEY_D] || keys[GLFW_KEY_RIGHT])
 	{
 		camera.ProcessKeyboard(RIGHT, deltaTime);
+	}
+
+	if (keys[GLFW_KEY_I])
+	{
+		rotX -= 0.2f;
+	}
+
+	if (keys[GLFW_KEY_K])
+	{
+		rotX += 0.2f;
+	}
+
+	if (keys[GLFW_KEY_J])
+	{
+		rotY -= 0.2f;
+	}
+
+	if (keys[GLFW_KEY_L])
+	{
+		rotY += 0.2f;
 	}
 }
 
