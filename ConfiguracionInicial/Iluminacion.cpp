@@ -44,7 +44,7 @@ bool firstMouse = true;
 // Light attributes
 glm::vec3 lightPos(0.5f, 0.5f, 2.5f);
 float movelightPos = 0.0f;
-glm::vec3 lightPos2(-3.0f, -1.0f, 2.0f);
+glm::vec3 lightPos2(-3.0f, -1.0f, 1.0f);
 float movelightPos2 = 0.0f;
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
@@ -228,9 +228,9 @@ int main()
         glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.2f, 0.7f, 0.8f);
         glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.3f, 0.6f, 0.4f);
 
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.ambient"), 0.2f, 0.1f, 0.3f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.diffuse"), 0.8f, 0.2f, 0.3f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.specular"), 1.0f, 0.5f, 0.2f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.ambient"), 0.8f, 0.6f, 0.4f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.diffuse"), 1.0f, 0.5f, 0.4f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.specular"), 1.0f, 0.5f, 0.3f);
 
         glm::mat4 view = camera.GetViewMatrix();
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
@@ -238,9 +238,9 @@ int main()
 
         // Set material properties
         glUniform3f(glGetUniformLocation(lightingShader.Program, "material.ambient"), 0.5f, 0.5f, 0.5f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.diffuse"), 0.7f, 0.2f, 0.4f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.specular"), 0.6f, 0.6f, 0.6f);
-        glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 0.6f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.diffuse"), 0.7f, 0.4f, 0.8f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.specular"), 0.9f, 0.7f, 1.0f);
+        glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 7.0f);
 
         // Draw the loaded model
         glm::mat4 model(1);
