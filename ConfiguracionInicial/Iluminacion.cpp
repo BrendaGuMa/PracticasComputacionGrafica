@@ -61,7 +61,7 @@ int main()
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     // Create a GLFWwindow object that we can use for GLFW's functions
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Materiales e Iluminacion", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Previo8 - Brenda Guerra", nullptr, nullptr);
 
     if (nullptr == window)
     {
@@ -219,9 +219,9 @@ int main()
 
 
         // Set lights properties
-        
-
-
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.3f, 0.3f, 0.3f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.3f, 0.3f, 0.3f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.0f, 0.0f, 0.0f);
 
 
         glm::mat4 view = camera.GetViewMatrix();
@@ -229,12 +229,10 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
         // Set material properties
-        
-
-
-
-
-
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.ambient"), 0.5f, 0.5f, 0.5f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.diffuse"), 0.8f, 0.8f, 0.0f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.specular"), 1.0f, 1.0f, 1.0f);
+        glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 0.8f);
 
         // Draw the loaded model
         glm::mat4 model(1);
@@ -242,8 +240,9 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glBindVertexArray(VAO);
        
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        
+
+        red_dog.Draw(lightingShader);
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glBindVertexArray(0);
 
