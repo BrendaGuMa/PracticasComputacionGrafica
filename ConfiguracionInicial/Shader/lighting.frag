@@ -25,6 +25,7 @@ out vec4 color;
 uniform vec3 viewPos;
 uniform Material material;
 uniform Light light;
+uniform Light light2;
 
 uniform sampler2D texture_diffusse;
 

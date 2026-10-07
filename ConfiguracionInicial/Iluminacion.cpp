@@ -44,6 +44,8 @@ bool firstMouse = true;
 // Light attributes
 glm::vec3 lightPos(0.5f, 0.5f, 2.5f);
 float movelightPos = 0.0f;
+glm::vec3 lightPos2(-2.0f, -1.0f, 2.5f);
+float movelightPos2 = 0.0f;
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 float rot = 0.0f;
@@ -106,6 +108,7 @@ int main()
 
     // Load models
     Model red_dog((char*)"Models/RedDog.obj");
+    Model cat((char*)"Models/12221_Cat_v1_l3.obj");
     glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
     float vertices[] = {
@@ -220,8 +223,8 @@ int main()
 
         // Set lights properties
         glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.3f, 0.3f, 0.3f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.3f, 0.3f, 0.3f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.0f, 0.0f, 0.0f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.2f, 0.7f, 0.8f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.3f, 0.6f, 0.4f);
 
 
         glm::mat4 view = camera.GetViewMatrix();
@@ -230,9 +233,9 @@ int main()
 
         // Set material properties
         glUniform3f(glGetUniformLocation(lightingShader.Program, "material.ambient"), 0.5f, 0.5f, 0.5f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.diffuse"), 0.8f, 0.8f, 0.0f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.specular"), 1.0f, 1.0f, 1.0f);
-        glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 0.8f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.diffuse"), 0.7f, 0.2f, 0.4f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "material.specular"), 0.6f, 0.6f, 0.6f);
+        glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 0.6f);
 
         // Draw the loaded model
         glm::mat4 model(1);
@@ -243,6 +246,13 @@ int main()
 
         red_dog.Draw(lightingShader);
         //glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-2.0f, -1.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.05f));
+        model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        cat.Draw(lightingShader);
 
         glBindVertexArray(0);
 
