@@ -1,6 +1,6 @@
-//Previo#8
+//Práctica#8
 //Guerra Marcelino Brenda Paola
-//Fecha de entrega: 6 de octubre de 2026
+//Fecha de entrega: 11 de octubre de 2026
 
 // Std. Includes
 #include <string>
@@ -109,6 +109,12 @@ int main()
     // Load models
     Model red_dog((char*)"Models/RedDog.obj");
     Model cat((char*)"Models/12221_Cat_v1_l3.obj");
+    Model house((char*)"Models/model.obj");
+    Model mailbox((char*)"Models/mailbox.obj");
+    Model fountain((char*)"Models/fountain.obj");
+    Model flowers((char*)"Models/vase_and_flowers.obj");
+    Model sun((char*)"Models/sun.obj");
+    Model moon((char*)"Models/moon (1).obj");
     glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
     float vertices[] = {
@@ -213,13 +219,13 @@ int main()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        
+
         lightingShader.Use();
         GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "light.position");
         GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
         glUniform3f(lightPosLoc, lightPos.x + movelightPos, lightPos.y + movelightPos, lightPos.z + movelightPos);
         glUniform3f(viewPosLoc, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
-        
+
         GLint lightPos2Loc = glGetUniformLocation(lightingShader.Program, "light2.position");
         glUniform3f(lightPos2Loc, lightPos2.x + movelightPos2, lightPos2.y + movelightPos2, lightPos2.z + movelightPos2);
 
@@ -243,21 +249,76 @@ int main()
         glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 7.0f);
 
         // Draw the loaded model
+        // Perro
         glm::mat4 model(1);
-        model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+        model = glm::translate(model, glm::vec3(1.5f, -0.73f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+        model = glm::rotate(model, glm::radians(150.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glBindVertexArray(VAO);
-       
-
         red_dog.Draw(lightingShader);
         //glDrawArrays(GL_TRIANGLES, 0, 36);
 
+        // Gato
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-2.0f, -1.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.05f));
-        model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::translate(model, glm::vec3(-0.8f, 2.15f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
+        model = glm::rotate(model, glm::radians(230.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         cat.Draw(lightingShader);
+
+        // Casa
+        model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(0.3f));
+        model = glm::translate(model, glm::vec3(0.0f, -6.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        house.Draw(lightingShader);
+
+        // Buzón
+        model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(1.2f, 1.2f, 1.2f));
+        model = glm::translate(model, glm::vec3(1.5f, -0.4f, 2.8f));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        mailbox.Draw(lightingShader);
+
+        // Fuente
+        model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(0.75f, 0.75f, 0.75f));
+        model = glm::translate(model, glm::vec3(-2.8f, -1.6f, 7.4f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        fountain.Draw(lightingShader);
+
+        // Flores
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(6.0f, -1.28f, 3.0f));
+        model = glm::scale(model, glm::vec3(0.03f, 0.03f, 0.03f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        flowers.Draw(lightingShader);
+
+        // Flores
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(6.0f, -1.28f, -3.0f));
+        model = glm::scale(model, glm::vec3(0.03f, 0.03f, 0.03f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        flowers.Draw(lightingShader);
+
+        // Sol
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 4.0f, -2.0f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        sun.Draw(lightingShader);
+
+        // Luna
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 5.0f, 2.0f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        moon.Draw(lightingShader);
 
         glBindVertexArray(0);
 
