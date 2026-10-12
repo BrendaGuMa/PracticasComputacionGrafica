@@ -231,7 +231,7 @@ int main()
         posicionSol.z = 10.0f * sin(movimiento) - 0.3f;
 
         posicionLuna.x = 0.0f;
-        posicionLuna.y = -radio * cos(movimiento) - 1.0f;
+        posicionLuna.y = -7.0f * cos(movimiento) - 1.0f;
         posicionLuna.z = -10.0f * sin(movimiento) - 0.3f;
 
         // Clear the colorbuffer
@@ -252,17 +252,38 @@ int main()
         GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
         glUniform3f(viewPosLoc, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
 
+        // Intensidad del dia y la noche
+        float intensidadSol = (cos(movimiento) + 1.0f) / 2.0f;
+        float intensidadLuna = 1.0f - intensidadSol;
+
+        // Mantener un poco de iluminacion
+        intensidadSol = 0.3f + intensidadSol * 0.7f;
+        intensidadLuna = 0.6f + intensidadLuna * 0.4f;
+
+        // Set lights properties
+
         // Set lights properties
 
         // Luz del Sol - Amarilla y calida
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.3f, 0.3f, 0.15f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 1.0f, 0.9f, 0.4f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 1.0f, 0.9f, 0.6f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"),
+            0.3f * intensidadSol, 0.3f * intensidadSol, 0.15f * intensidadSol);
+
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"),
+            1.0f * intensidadSol, 0.9f * intensidadSol, 0.4f * intensidadSol);
+
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"),
+            1.0f * intensidadSol, 0.9f * intensidadSol, 0.6f * intensidadSol);
+
 
         // Luz de la Luna - Azul y fria
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.ambient"), 0.1f, 0.1f, 0.2f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.diffuse"), 0.3f, 0.4f, 0.8f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.specular"), 0.4f, 0.5f, 0.9f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.ambient"),
+            0.3f * intensidadLuna, 0.3f * intensidadLuna, 0.5f * intensidadLuna);
+
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.diffuse"),
+            0.5f * intensidadLuna, 0.6f * intensidadLuna, 1.0f * intensidadLuna);
+
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.specular"),
+            0.6f * intensidadLuna, 0.7f * intensidadLuna, 1.0f * intensidadLuna);
 
         glm::mat4 view = camera.GetViewMatrix();
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
