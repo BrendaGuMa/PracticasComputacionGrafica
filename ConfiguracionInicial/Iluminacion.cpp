@@ -239,13 +239,16 @@ int main()
         glUniform3f(viewPosLoc, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
 
         // Set lights properties
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.3f, 0.3f, 0.3f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.2f, 0.7f, 0.8f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.3f, 0.6f, 0.4f);
 
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.ambient"), 0.8f, 0.6f, 0.4f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.diffuse"), 1.0f, 0.5f, 0.4f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.specular"), 1.0f, 0.5f, 0.3f);
+        // Luz del Sol - Amarilla y calida
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.3f, 0.3f, 0.15f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 1.0f, 0.9f, 0.4f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 1.0f, 0.9f, 0.6f);
+
+        // Luz de la Luna - Azul y fria
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.ambient"), 0.1f, 0.1f, 0.2f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.diffuse"), 0.3f, 0.4f, 0.8f);
+        glUniform3f(glGetUniformLocation(lightingShader.Program, "light2.specular"), 0.4f, 0.5f, 0.9f);
 
         glm::mat4 view = camera.GetViewMatrix();
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
