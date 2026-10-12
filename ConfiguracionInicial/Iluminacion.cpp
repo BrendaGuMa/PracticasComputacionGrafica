@@ -4,6 +4,7 @@
 
 // Std. Includes
 #include <string>
+#include <cmath>
 
 // GLEW
 #include <GL/glew.h>
@@ -50,6 +51,10 @@ glm::vec3 lightPos2(0.0f, -4.0f, -2.0f);
 float movelightPos2 = 0.0f;
 // Movimiento del Sol y la Luna
 float movimiento = 0.0f;
+// Movimiento circular
+float radio = 6.0f;
+glm::vec3 posicionSol;
+glm::vec3 posicionLuna;
 
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
@@ -220,6 +225,15 @@ int main()
         glfwPollEvents();
         DoMovement();
 
+        // Movimiento circular del Sol y la Luna
+        posicionSol.x = 0.0f;
+        posicionSol.y = radio * cos(movimiento) - 1.0f;
+        posicionSol.z = 10.0f * sin(movimiento) - 0.3f;
+
+        posicionLuna.x = 0.0f;
+        posicionLuna.y = -radio * cos(movimiento) - 1.0f;
+        posicionLuna.z = -10.0f * sin(movimiento) - 0.3f;
+
         // Clear the colorbuffer
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -228,11 +242,11 @@ int main()
         lightingShader.Use();
         // Posicion de la luz del Sol
         GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "light.position");
-        glUniform3f(lightPosLoc, lightPos.x, lightPos.y + movimiento, lightPos.z);
+        glUniform3f(lightPosLoc, posicionSol.x, posicionSol.y + 1.0f, posicionSol.z);
 
         // Posicion de la luz de la Luna
         GLint lightPos2Loc = glGetUniformLocation(lightingShader.Program, "light2.position");
-        glUniform3f(lightPos2Loc, lightPos2.x, lightPos2.y - movimiento, lightPos2.z);
+        glUniform3f(lightPos2Loc, posicionLuna.x, posicionLuna.y, posicionLuna.z);
 
         // Posicion de la camara
         GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
@@ -318,7 +332,7 @@ int main()
 
         // Sol
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 4.0f + movimiento, -2.0f));
+        model = glm::translate(model, posicionSol);
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
@@ -326,7 +340,7 @@ int main()
 
         // Luna
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -4.0f - movimiento, -2.0f));
+        model = glm::translate(model, posicionLuna);
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
@@ -341,7 +355,7 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
         model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos + glm::vec3(0.0f, movimiento, 0.0f));
+        model = glm::translate(model, posicionSol + glm::vec3(0.0f, 1.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.3f));
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glBindVertexArray(VAO);
@@ -349,7 +363,7 @@ int main()
         glBindVertexArray(0);
 
         model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos2 - glm::vec3(0.0f, movimiento, 0.0f));
+        model = glm::translate(model, posicionLuna);
         model = glm::scale(model, glm::vec3(0.3f));
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glBindVertexArray(VAO);
@@ -401,12 +415,12 @@ void DoMovement()
     // Movimiento del Sol y la Luna
     if (keys[GLFW_KEY_O])
     {
-        movimiento += 4.0f * deltaTime;
+        movimiento += 2.0f * deltaTime;
     }
 
     if (keys[GLFW_KEY_L])
     {
-        movimiento -= 4.0f * deltaTime;
+        movimiento -= 2.0f * deltaTime;
     }
 
 }
