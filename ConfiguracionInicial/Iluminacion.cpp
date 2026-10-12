@@ -42,10 +42,15 @@ bool firstMouse = true;
 
 
 // Light attributes
-glm::vec3 lightPos(0.5f, 0.5f, 2.5f);
+// Luz del Sol
+glm::vec3 lightPos(0.0f, 5.0f, -2.0f);
 float movelightPos = 0.0f;
-glm::vec3 lightPos2(-3.0f, -1.0f, 1.0f);
+// Luz de la Luna
+glm::vec3 lightPos2(0.0f, -4.0f, -2.0f);
 float movelightPos2 = 0.0f;
+// Movimiento del Sol y la Luna
+float movimiento = 0.0f;
+
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 float rot = 0.0f;
@@ -221,13 +226,17 @@ int main()
 
 
         lightingShader.Use();
+        // Posicion de la luz del Sol
         GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "light.position");
-        GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
-        glUniform3f(lightPosLoc, lightPos.x + movelightPos, lightPos.y + movelightPos, lightPos.z + movelightPos);
-        glUniform3f(viewPosLoc, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
+        glUniform3f(lightPosLoc, lightPos.x, lightPos.y + movimiento, lightPos.z);
 
+        // Posicion de la luz de la Luna
         GLint lightPos2Loc = glGetUniformLocation(lightingShader.Program, "light2.position");
-        glUniform3f(lightPos2Loc, lightPos2.x + movelightPos2, lightPos2.y + movelightPos2, lightPos2.z + movelightPos2);
+        glUniform3f(lightPos2Loc, lightPos2.x, lightPos2.y - movimiento, lightPos2.z);
+
+        // Posicion de la camara
+        GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
+        glUniform3f(viewPosLoc, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
 
         // Set lights properties
         glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.3f, 0.3f, 0.3f);
@@ -306,7 +315,7 @@ int main()
 
         // Sol
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 4.0f, -2.0f));
+        model = glm::translate(model, glm::vec3(0.0f, 4.0f + movimiento, -2.0f));
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
@@ -314,7 +323,7 @@ int main()
 
         // Luna
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 5.0f, 2.0f));
+        model = glm::translate(model, glm::vec3(0.0f, -4.0f - movimiento, -2.0f));
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
@@ -329,7 +338,7 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
         model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos + movelightPos);
+        model = glm::translate(model, lightPos + glm::vec3(0.0f, movimiento, 0.0f));
         model = glm::scale(model, glm::vec3(0.3f));
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glBindVertexArray(VAO);
@@ -337,7 +346,7 @@ int main()
         glBindVertexArray(0);
 
         model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos2 + movelightPos2);
+        model = glm::translate(model, lightPos2 - glm::vec3(0.0f, movimiento, 0.0f));
         model = glm::scale(model, glm::vec3(0.3f));
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glBindVertexArray(VAO);
@@ -386,6 +395,17 @@ void DoMovement()
             rot -= 0.1f;
     }
 
+    // Movimiento del Sol y la Luna
+    if (keys[GLFW_KEY_O])
+    {
+        movimiento += 4.0f * deltaTime;
+    }
+
+    if (keys[GLFW_KEY_L])
+    {
+        movimiento -= 4.0f * deltaTime;
+    }
+
 }
 
 // Is called whenever a key is pressed/released via GLFW
@@ -408,28 +428,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
         }
     }
 
-    if (keys[GLFW_KEY_O])
-    {
-       
-        movelightPos += 0.1f;
-    }
-
-    if (keys[GLFW_KEY_L])
-    {
-        
-        movelightPos -= 0.1f;
-    }
-
-    if (keys[GLFW_KEY_I])
-    {
-        movelightPos2 += 0.1f;
-    }
-
-    if (keys[GLFW_KEY_K])
-    {
-        movelightPos2 -= 0.1f;
-    }
-
 }
 
 void MouseCallback(GLFWwindow* window, double xPos, double yPos)
@@ -449,5 +447,3 @@ void MouseCallback(GLFWwindow* window, double xPos, double yPos)
 
     camera.ProcessMouseMovement(xOffset, yOffset);
 }
-
-
