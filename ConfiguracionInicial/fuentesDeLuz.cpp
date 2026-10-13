@@ -325,14 +325,14 @@ int main()
 		model = glm::translate(model, glm::vec3(1.0f, -0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.5f));
 
-		glEnable(GL_BLEND);
+		//glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 1);
 		Mailbox.Draw(lightingShader);
 
-		glDisable(GL_BLEND);
+		//glDisable(GL_BLEND);
 	
 
 		// Also draw the lamp object, again binding the appropriate shader
