@@ -160,6 +160,7 @@ int main()
 	
 	Model Dog((char*)"Models/ball.obj");
 	Model Piso((char*)"Models/piso.obj");
+	Model Mailbox((char*)"Models/mailbox.obj");
 
 
 
@@ -221,9 +222,9 @@ int main()
 
 		// Directional light
 		glUniform3f(glGetUniformLocation(lightingShader.Program, "dirLight.direction"), -0.2f, -1.0f, -0.3f);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "dirLight.ambient"),0.05f,0.05f,0.05f);
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "dirLight.ambient"),0.2f,0.2f,0.2f);
 		glUniform3f(glGetUniformLocation(lightingShader.Program, "dirLight.diffuse"), 0.05f, 0.05f, 0.05f);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "dirLight.specular"),0.3f, 0.3f, 0.3f);
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "dirLight.specular"),0.4f, 0.4f, 0.4f);
 
 
 		// Point light 1
@@ -315,10 +316,23 @@ int main()
 		//glEnable(GL_BLEND);//Avtiva la funcionalidad para trabajar el canal alfa
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 0);
+		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 1);
 	    Dog.Draw(lightingShader);
 		//glDisable(GL_BLEND);  //Desactiva el canal alfa 
-		glBindVertexArray(0);
+
+		// Buzón
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(1.0f, -0.1f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.5f));
+
+		//glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 1);
+		Mailbox.Draw(lightingShader);
+
+		//glDisable(GL_BLEND);
 	
 
 		// Also draw the lamp object, again binding the appropriate shader
@@ -396,29 +410,29 @@ void DoMovement()
 
 	if (keys[GLFW_KEY_T])
 	{
-		pointLightPositions[0].x += 0.01f;
+		pointLightPositions[0].x += 0.001f;
 	}
 	if (keys[GLFW_KEY_G])
 	{
-		pointLightPositions[0].x -= 0.01f;
+		pointLightPositions[0].x -= 0.001f;
 	}
 
 	if (keys[GLFW_KEY_Y])
 	{
-		pointLightPositions[0].y += 0.01f;
+		pointLightPositions[0].y += 0.001f;
 	}
 
 	if (keys[GLFW_KEY_H])
 	{
-		pointLightPositions[0].y -= 0.01f;
+		pointLightPositions[0].y -= 0.001f;
 	}
 	if (keys[GLFW_KEY_U])
 	{
-		pointLightPositions[0].z -= 0.1f;
+		pointLightPositions[0].z -= 0.001f;
 	}
 	if (keys[GLFW_KEY_J])
 	{
-		pointLightPositions[0].z += 0.01f;
+		pointLightPositions[0].z += 0.001f;
 	}
 	
 }
