@@ -436,12 +436,12 @@ void DoMovement()
     // Movimiento del Sol y la Luna
     if (keys[GLFW_KEY_O])
     {
-        movimiento += 2.0f * deltaTime;
+        movimiento += 1.0f * deltaTime;
     }
 
     if (keys[GLFW_KEY_L])
     {
-        movimiento -= 2.0f * deltaTime;
+        movimiento -= 1.0f * deltaTime;
     }
 
 }
