@@ -50,9 +50,9 @@ bool active;
 // Positions of the point lights
 glm::vec3 pointLightPositions[] = {
 	glm::vec3(6.2f, 1.05f, -3.0f),  // Farola exterior 1
-	glm::vec3(6.2f, 1.05f, 3.5f),   // Farola exterior 2 6.06
-	glm::vec3(0.0f, 0.0f, 0.0f),   // Luz de la casa (pendiente)
-	glm::vec3(0.0f, 0.0f, 0.0f)    // Sin utilizar
+	glm::vec3(6.2f, 1.05f, 3.5f),   // Farola exterior 2 
+	glm::vec3(-0.35f, 1.7f, 0.65f), // Lampara de la entrada (pendiente)
+	glm::vec3(-1.5f, -0.7f, 5.5f)     // Luz decorativa de la fuente
 };
 
 float vertices[] = {
@@ -103,6 +103,16 @@ float vertices[] = {
 
 // Encendido y apagado de las farolas
 bool farolasEncendidas = true;
+bool luzEntradaEncendida = true;
+// Control de la luz decorativa de la fuente
+bool luzFuenteEncendida = true;
+
+// Control del reflector del garaje
+bool reflectorEncendido = true;
+
+// Posicion y direccion del reflector
+glm::vec3 posicionReflector(-1.4f, 0.8f, -2.1f);
+glm::vec3 direccionReflector(1.0f, -5.0f, -0.2f); //-1.5
 
 // Posiciones de los modelos del Sol y la Luna
 glm::vec3 posicionSol(0.0f, 5.0f, -2.0f);
@@ -170,7 +180,7 @@ int main()
 	Model fountain((char*)"Models/fountain.obj");
 	Model moon((char*)"Models/moon (1).obj");
 	Model farola((char*)"Models/street_lamp.obj");
-	Model farolaCasa((char*)"Models/low_poly_street_lamp.obj");
+	Model farolaCasa((char*)"Models/security_light.obj");
 
 
 
@@ -289,35 +299,110 @@ int main()
 		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[1].linear"), 0.35f);
 		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[1].quadratic"), 0.44f);
 
-		// Point light 3
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].position"), pointLightPositions[2].x, pointLightPositions[2].y, pointLightPositions[2].z);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].ambient"), 0.0f, 0.0f, 0.0f);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].diffuse"), 0.0f, 0.0f, 0.0f);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].specular"), 0.0f, 0.0f, 0.0f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[2].constant"), 1.0f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[2].linear"), 0.0f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[2].quadratic"), 0.0f);
+		// Luz puntual 3 - Lampara de la entrada
 
-		// Point light 4
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[3].position"), pointLightPositions[3].x, pointLightPositions[3].y, pointLightPositions[3].z);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[3].ambient"), 0.0f, 0.0f, 0.0f);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[3].diffuse"), 0.0f, 0.0f, 0.0f);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[3].specular"), 0.0f, 0.0f, 0.0f);
+		float intensidadEntrada = luzEntradaEncendida ? 1.0f : 0.0f;
+
+		// Posicion
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].position"),
+			pointLightPositions[2].x,
+			pointLightPositions[2].y,
+			pointLightPositions[2].z);
+
+		// Iluminacion ambiental
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].ambient"),
+			0.04f * intensidadEntrada,
+			0.03f * intensidadEntrada,
+			0.015f * intensidadEntrada);
+
+		// Iluminacion difusa
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].diffuse"),
+			0.75f * intensidadEntrada,
+			0.55f * intensidadEntrada,
+			0.25f * intensidadEntrada);
+
+		// Iluminacion especular
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].specular"),
+			0.85f * intensidadEntrada,
+			0.65f * intensidadEntrada,
+			0.35f * intensidadEntrada);
+
+		// Atenuacion
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[2].constant"), 1.0f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[2].linear"), 0.35f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[2].quadratic"), 0.44f);
+
+		// Luz puntual 4 - Fuente decorativa
+		float intensidadFuente = luzFuenteEncendida ? 1.0f : 0.0f;
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[3].position"),
+			pointLightPositions[3].x,
+			pointLightPositions[3].y,
+			pointLightPositions[3].z);
+
+		// Iluminacion ambiental
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[3].ambient"),
+			0.06f * intensidadFuente,
+			0.015f * intensidadFuente,
+			0.12f * intensidadFuente);
+
+		// Iluminacion difusa
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[3].diffuse"),
+			0.85f * intensidadFuente,
+			0.15f * intensidadFuente,
+			1.0f * intensidadFuente);
+
+		// Iluminacion especular
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[3].specular"),
+			0.90f * intensidadFuente,
+			0.30f * intensidadFuente,
+			1.0f * intensidadFuente);
+
+		// Atenuación
 		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[3].constant"), 1.0f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[3].linear"), 0.0f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[3].quadratic"), 0.0f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[3].linear"), 0.30f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[3].quadratic"), 0.40f);
 
 		// SpotLight
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.position"), camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.direction"), camera.GetFront().x, camera.GetFront().y, camera.GetFront().z);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.ambient"), 0.0f, 0.0f, 0.0f);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.diffuse"), 0.0f, 0.0f, 0.0f);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.specular"), 0.0f, 0.0f, 0.0f);
+// Reflector de seguridad del garaje
+		float intensidadReflector = reflectorEncendido ? 1.0f : 0.0f;
+
+		// Posicion
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.position"),
+			posicionReflector.x, posicionReflector.y, posicionReflector.z);
+
+		// Direccion
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.direction"),
+			direccionReflector.x, direccionReflector.y, direccionReflector.z);
+
+		// Iluminacion ambiental
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.ambient"),
+			0.02f * intensidadReflector,
+			0.02f * intensidadReflector,
+			0.02f * intensidadReflector);
+
+		// Iluminacion difusa
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.diffuse"),
+			1.0f * intensidadReflector,
+			0.95f * intensidadReflector,
+			0.80f * intensidadReflector);
+
+		// Iluminacion especular
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.specular"),
+			1.0f * intensidadReflector,
+			0.95f * intensidadReflector,
+			0.85f * intensidadReflector);
+
+		// Atenuacion
 		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.constant"), 1.0f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.linear"), 0.3f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.quadratic"), 0.7f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.cutOff"), glm::cos(glm::radians(12.0f)));
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.outerCutOff"), glm::cos(glm::radians(18.0f)));
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.linear"), 0.22f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.quadratic"), 0.20f);
+
+		// Apertura del reflector
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.cutOff"),
+			glm::cos(glm::radians(25.0f)));
+
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.outerCutOff"),
+			glm::cos(glm::radians(40.0f)));
 
 		// Set material properties
 		glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 5.0f);
@@ -415,9 +500,9 @@ int main()
 
 		// Farola Casa
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-1.8f, 1.0f, 2.5f));
-		model = glm::scale(model, glm::vec3(9.5f, 9.5f, 9.5f));
-		model = glm::rotate(model, glm::radians(150.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(-1.4f, 0.8f, -2.1f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		farolaCasa.Draw(lightingShader);
 
@@ -437,17 +522,28 @@ int main()
 		model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		// Draw the light object (using light's vertex attributes)
-		for (GLuint i = 0; i < 2; i++)
+		for (GLuint i = 3; i < 4; i++)
 		{
 			model = glm::mat4(1);
 			model = glm::translate(model, pointLightPositions[i]);
 			model = glm::scale(model, glm::vec3(0.12f)); // Make it a smaller cube
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			glBindVertexArray(VAO);
-			//glDrawArrays(GL_TRIANGLES, 0, 36);
+			/*glDrawArrays(GL_TRIANGLES, 0, 36);*/
 		}
 		glBindVertexArray(0);
 
+
+		// Cubo de referencia del reflector
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, posicionReflector);
+		model = glm::scale(model, glm::vec3(0.08f));
+
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
 
 
 		// Swap the screen buffers
@@ -544,10 +640,28 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 		}
 	}
 
-	// Encender y apagar las farolas
+	// Encender y apagar las farolas exteriores
 	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
 	{
 		farolasEncendidas = !farolasEncendidas;
+	}
+
+	// Encender y apagar la luz de la entrada
+	if (key == GLFW_KEY_P && action == GLFW_PRESS)
+	{
+		luzEntradaEncendida = !luzEntradaEncendida;
+	}
+
+	// Encender y apagar el reflector del garaje
+	if (key == GLFW_KEY_R && action == GLFW_PRESS)
+	{
+		reflectorEncendido = !reflectorEncendido;
+	}
+
+	// Encender y apagar la luz decorativa de la fuente
+	if (key == GLFW_KEY_F && action == GLFW_PRESS)
+	{
+		luzFuenteEncendida = !luzFuenteEncendida;
 	}
 }
 
