@@ -49,10 +49,10 @@ bool active;
 
 // Positions of the point lights
 glm::vec3 pointLightPositions[] = {
-	glm::vec3(0.0f,0.0f, 0.0f),
-	glm::vec3(0.0f,0.0f, 0.0f),
-	glm::vec3(0.0f,0.0f,  0.0f),
-	glm::vec3(0.0f,0.0f, 0.0f)
+	glm::vec3(6.2f, 1.05f, -3.0f),  // Farola exterior 1
+	glm::vec3(6.2f, 1.05f, 3.5f),   // Farola exterior 2 6.06
+	glm::vec3(0.0f, 0.0f, 0.0f),   // Luz de la casa (pendiente)
+	glm::vec3(0.0f, 0.0f, 0.0f)    // Sin utilizar
 };
 
 float vertices[] = {
@@ -101,7 +101,8 @@ float vertices[] = {
 
 
 
-glm::vec3 Light1 = glm::vec3(0);
+// Encendido y apagado de las farolas
+bool farolasEncendidas = true;
 
 // Posiciones de los modelos del Sol y la Luna
 glm::vec3 posicionSol(0.0f, 5.0f, -2.0f);
@@ -237,30 +238,56 @@ int main()
 
 
 		// Point light 1
-		glm::vec3 lightColor;
-		lightColor.x = abs(sin(glfwGetTime() * Light1.x));
-		lightColor.y = abs(sin(glfwGetTime() * Light1.y));
-		lightColor.z = sin(glfwGetTime() * Light1.z);
+		// Luz puntual 1 - Farola exterior 1
+		glUniform3fv(glGetUniformLocation(lightingShader.Program, "pointLights[0].position"),
+			1, glm::value_ptr(pointLightPositions[0]));
 
+		float intensidadFarola = farolasEncendidas ? 1.0f : 0.0f;
 
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[0].position"), pointLightPositions[0].x, pointLightPositions[0].y, pointLightPositions[0].z);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[0].ambient"), lightColor.x, lightColor.y, lightColor.z);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[0].diffuse"), lightColor.x, lightColor.y, lightColor.z);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[0].specular"), 0.1f, 1.0f, 0.1f);
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[0].ambient"),
+			0.08f * intensidadFarola,
+			0.06f * intensidadFarola,
+			0.03f * intensidadFarola);
+
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[0].diffuse"),
+			1.0f * intensidadFarola,
+			0.75f * intensidadFarola,
+			0.35f * intensidadFarola);
+
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[0].specular"),
+			1.0f * intensidadFarola,
+			0.8f * intensidadFarola,
+			0.5f * intensidadFarola);
+
 		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[0].constant"), 1.0f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[0].linear"), 0.045f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[0].quadratic"), 0.075f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[0].linear"), 0.35f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[0].quadratic"), 0.44f);
 
 
 
 		// Point light 2
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[1].position"), pointLightPositions[1].x, pointLightPositions[1].y, pointLightPositions[1].z);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[1].ambient"), 0.05f, 0.05f, 0.05f);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[1].diffuse"), 0.0f, 0.0f, 0.0f);
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[1].specular"), 0.0f, 0.0f, 0.0f);
+		// Luz puntual 2 - Farola exterior 2
+		glUniform3fv(glGetUniformLocation(lightingShader.Program, "pointLights[1].position"),
+			1, glm::value_ptr(pointLightPositions[1]));
+
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[1].ambient"),
+			0.08f * intensidadFarola,
+			0.06f * intensidadFarola,
+			0.03f * intensidadFarola);
+
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[1].diffuse"),
+			1.0f * intensidadFarola,
+			0.75f * intensidadFarola,
+			0.35f * intensidadFarola);
+
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[1].specular"),
+			1.0f * intensidadFarola,
+			0.8f * intensidadFarola,
+			0.5f * intensidadFarola);
+
 		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[1].constant"), 1.0f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[1].linear"), 0.0f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[1].quadratic"), 0.0f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[1].linear"), 0.35f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[1].quadratic"), 0.44f);
 
 		// Point light 3
 		glUniform3f(glGetUniformLocation(lightingShader.Program, "pointLights[2].position"), pointLightPositions[2].x, pointLightPositions[2].y, pointLightPositions[2].z);
@@ -410,14 +437,14 @@ int main()
 		model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		// Draw the light object (using light's vertex attributes)
-		for (GLuint i = 0; i < 4; i++)
+		for (GLuint i = 0; i < 2; i++)
 		{
 			model = glm::mat4(1);
 			model = glm::translate(model, pointLightPositions[i]);
-			model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
+			model = glm::scale(model, glm::vec3(0.12f)); // Make it a smaller cube
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			glBindVertexArray(VAO);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+			//glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 		glBindVertexArray(0);
 
@@ -517,17 +544,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 		}
 	}
 
-	if (keys[GLFW_KEY_SPACE])
+	// Encender y apagar las farolas
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
 	{
-		active = !active;
-		if (active)
-		{
-			Light1 = glm::vec3(1.0f, 1.0f, 0.0f);
-		}
-		else
-		{
-			Light1 = glm::vec3(0);//Cuado es solo un valor en los 3 vectores pueden dejar solo una componente
-		}
+		farolasEncendidas = !farolasEncendidas;
 	}
 }
 
