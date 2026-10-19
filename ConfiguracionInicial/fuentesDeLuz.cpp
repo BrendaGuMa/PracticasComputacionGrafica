@@ -27,6 +27,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Model.h"
+#include <string>
 
 // Function prototypes
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -112,10 +113,20 @@ bool reflectorEncendido = true;
 
 // Posicion y direccion del reflector
 glm::vec3 posicionReflector(-1.4f, 0.8f, -2.1f);
-glm::vec3 direccionReflector(1.0f, -5.0f, -0.2f); //-1.5
+glm::vec3 direccionReflector(1.0f, -5.0f, -0.2f); 
+
+// Posiciones de los faros delanteros del automovil
+glm::vec3 posicionFaroIzquierdo(3.33f, -0.69f, -2.25f);
+glm::vec3 posicionFaroDerecho(4.22f, -0.69f, -2.18f);
+
+// Direccion de los faros hacia la calle
+glm::vec3 direccionFaros(0.0f, -0.05f, 1.0f);
+
+// Control de los faros del automovil
+bool farosAutoEncendidos = true;
 
 // Posiciones de los modelos del Sol y la Luna
-glm::vec3 posicionSol(0.0f, 5.0f, -2.0f);
+glm::vec3 posicionSol(2.0f, 5.0f, -3.0f);
 glm::vec3 posicionLuna(0.0f, 5.0f, -2.0f);
 
 // Deltatime
@@ -362,50 +373,122 @@ int main()
 		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[3].linear"), 0.30f);
 		glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[3].quadratic"), 0.40f);
 
-		// SpotLight
-// Reflector de seguridad del garaje
+		// ======================================================
+// REFLECTORES
+// ======================================================
+
+// Reflector 1 - Seguridad del garaje
+
 		float intensidadReflector = reflectorEncendido ? 1.0f : 0.0f;
 
 		// Posicion
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.position"),
-			posicionReflector.x, posicionReflector.y, posicionReflector.z);
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLights[0].position"),
+			posicionReflector.x,
+			posicionReflector.y,
+			posicionReflector.z);
 
 		// Direccion
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.direction"),
-			direccionReflector.x, direccionReflector.y, direccionReflector.z);
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLights[0].direction"),
+			direccionReflector.x,
+			direccionReflector.y,
+			direccionReflector.z);
 
 		// Iluminacion ambiental
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.ambient"),
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLights[0].ambient"),
 			0.02f * intensidadReflector,
 			0.02f * intensidadReflector,
 			0.02f * intensidadReflector);
 
 		// Iluminacion difusa
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.diffuse"),
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLights[0].diffuse"),
 			1.0f * intensidadReflector,
 			0.95f * intensidadReflector,
 			0.80f * intensidadReflector);
 
 		// Iluminacion especular
-		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLight.specular"),
+		glUniform3f(glGetUniformLocation(lightingShader.Program, "spotLights[0].specular"),
 			1.0f * intensidadReflector,
 			0.95f * intensidadReflector,
 			0.85f * intensidadReflector);
 
 		// Atenuacion
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.constant"), 1.0f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.linear"), 0.22f);
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.quadratic"), 0.20f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLights[0].constant"), 1.0f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLights[0].linear"), 0.22f);
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLights[0].quadratic"), 0.20f);
 
 		// Apertura del reflector
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.cutOff"),
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLights[0].cutOff"),
 			glm::cos(glm::radians(25.0f)));
 
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLight.outerCutOff"),
+		glUniform1f(glGetUniformLocation(lightingShader.Program, "spotLights[0].outerCutOff"),
 			glm::cos(glm::radians(40.0f)));
 
-		// Set material properties
-		glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 5.0f);
+
+		// ======================================================
+		// Reflectores 2 y 3 - Faros delanteros del automovil
+		// ======================================================
+
+		float intensidadFaros = farosAutoEncendidos ? 1.0f : 0.0f;
+
+		glm::vec3 posicionesFaros[] = {
+			posicionFaroIzquierdo,
+			posicionFaroDerecho
+		};
+
+		for (int i = 0; i < 2; i++)
+		{
+			std::string nombre = "spotLights[" + std::to_string(i + 1) + "].";
+
+			// Posicion
+			glUniform3fv(glGetUniformLocation(lightingShader.Program,
+				(nombre + "position").c_str()),
+				1, glm::value_ptr(posicionesFaros[i]));
+
+			// Direccion hacia la izquierda
+			glUniform3fv(glGetUniformLocation(lightingShader.Program,
+				(nombre + "direction").c_str()),
+				1, glm::value_ptr(direccionFaros));
+
+			// Iluminacion ambiental
+			glUniform3f(glGetUniformLocation(lightingShader.Program,
+				(nombre + "ambient").c_str()),
+				0.01f * intensidadFaros,
+				0.01f * intensidadFaros,
+				0.015f * intensidadFaros);
+
+			// Iluminacion difusa - Faros blancos intensos
+			glUniform3f(glGetUniformLocation(lightingShader.Program,
+				(nombre + "diffuse").c_str()),
+				1.8f * intensidadFaros,
+				1.75f * intensidadFaros,
+				1.55f * intensidadFaros);
+
+			// Iluminacion especular
+			glUniform3f(glGetUniformLocation(lightingShader.Program,
+				(nombre + "specular").c_str()),
+				1.5f * intensidadFaros,
+				1.45f * intensidadFaros,
+				1.30f * intensidadFaros);
+
+			// Atenuacion
+			glUniform1f(glGetUniformLocation(lightingShader.Program,
+				(nombre + "constant").c_str()), 1.0f);
+
+			glUniform1f(glGetUniformLocation(lightingShader.Program,
+				(nombre + "linear").c_str()), 0.09f);
+
+			glUniform1f(glGetUniformLocation(lightingShader.Program,
+				(nombre + "quadratic").c_str()), 0.032f);
+
+			// Apertura del cono
+			glUniform1f(glGetUniformLocation(lightingShader.Program,
+				(nombre + "cutOff").c_str()),
+				glm::cos(glm::radians(12.0f)));
+
+			glUniform1f(glGetUniformLocation(lightingShader.Program,
+				(nombre + "outerCutOff").c_str()),
+				glm::cos(glm::radians(20.0f)));
+		}
 
 		// Create camera transformations
 		glm::mat4 view;
@@ -532,6 +615,33 @@ int main()
 			/*glDrawArrays(GL_TRIANGLES, 0, 36);*/
 		}
 		glBindVertexArray(0);
+
+
+		// Faros delanteros del automovil
+		if (farosAutoEncendidos)
+		{
+			// Faro izquierdo
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, posicionFaroIzquierdo);
+			model = glm::scale(model, glm::vec3(0.10f));
+
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+			glBindVertexArray(VAO);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+			// Faro derecho
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, posicionFaroDerecho);
+			model = glm::scale(model, glm::vec3(0.10f));
+
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+			glBindVertexArray(0);
+		}
 
 
 		// Cubo de referencia del reflector
@@ -662,6 +772,12 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 	if (key == GLFW_KEY_F && action == GLFW_PRESS)
 	{
 		luzFuenteEncendida = !luzFuenteEncendida;
+	}
+
+	// Encender y apagar los faros delanteros del automovil
+	if (key == GLFW_KEY_C && action == GLFW_PRESS)
+	{
+		farosAutoEncendidos = !farosAutoEncendidos;
 	}
 }
 

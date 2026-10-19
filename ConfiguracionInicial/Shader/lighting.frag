@@ -56,7 +56,8 @@ out vec4 color;
 uniform vec3 viewPos;
 uniform DirLight dirLight;
 uniform PointLight pointLights[NUMBER_OF_POINT_LIGHTS];
-uniform SpotLight spotLight;
+#define NUMBER_OF_SPOT_LIGHTS 3
+uniform SpotLight spotLights[NUMBER_OF_SPOT_LIGHTS];
 uniform Material material;
 uniform int transparency;
 
@@ -80,9 +81,13 @@ void main( )
         result += CalcPointLight( pointLights[i], norm, FragPos, viewDir );
     }
     
-    // Spot light
-    result += CalcSpotLight( spotLight, norm, FragPos, viewDir );
  	
+    // Spot lights
+    for (int i = 0; i < NUMBER_OF_SPOT_LIGHTS; i++)
+    {
+        result += CalcSpotLight(spotLights[i], norm, FragPos, viewDir);
+    }
+
     color = vec4(result, texture(material.diffuse, TexCoords).a);
 	  if(color.a < 0.1 && transparency==1)
         discard;
