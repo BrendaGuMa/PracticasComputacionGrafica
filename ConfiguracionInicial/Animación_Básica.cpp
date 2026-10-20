@@ -103,9 +103,19 @@ float vertices[] = {
 
 
 glm::vec3 Light1 = glm::vec3(0);
+
 //Anim
-float rotBall = 0;
 bool AnimBall = false;
+
+float posBallX = 0.0f;
+float posBallZ = 0.0f;
+
+float alturaInicio = 1.7f;
+float alturaFinal = 0.0f;
+
+float movBallY = alturaInicio;
+float velocidadBall = 0.5f;
+bool bajandoBall = true;
 
 
 // Deltatime
@@ -295,14 +305,20 @@ int main()
 		Dog.Draw(lightingShader);
 
 		model = glm::mat4(1);
-		glEnable(GL_BLEND);//Avtiva la funcionalidad para trabajar el canal alfa
+
+		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
 		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 1);
-		model = glm::rotate(model, glm::radians(rotBall), glm::vec3(0.0f, 1.0f, 0.0f));
+
+		// Posición de la pelota
+		model = glm::translate(model, glm::vec3(posBallX, movBallY, posBallZ));
+
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-	    Ball.Draw(lightingShader); 
-		glDisable(GL_BLEND);  //Desactiva el canal alfa 
+
+		Ball.Draw(lightingShader);
+
+		glDisable(GL_BLEND);
 		glBindVertexArray(0);
 	
 
@@ -449,12 +465,26 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 void Animation() {
 	if (AnimBall)
 	{
-		rotBall += 0.2f;
-		printf("%f", rotBall);
-	}
-	else
-	{
-		//rotBall = 0.0f;
+		if (bajandoBall)
+		{
+			movBallY -= velocidadBall * deltaTime;
+
+			if (movBallY <= alturaFinal)
+			{
+				movBallY = alturaFinal;
+				bajandoBall = false;
+			}
+		}
+		else
+		{
+			movBallY += velocidadBall * deltaTime;
+
+			if (movBallY >= alturaInicio)
+			{
+				movBallY = alturaInicio;
+				bajandoBall = true;
+			}
+		}
 	}
 }
 
