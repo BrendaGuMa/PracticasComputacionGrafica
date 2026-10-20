@@ -450,7 +450,7 @@ void Animation() {
 	if (AnimBall)
 	{
 		rotBall += 0.2f;
-		//printf("%f", rotBall);
+		printf("%f", rotBall);
 	}
 	else
 	{
