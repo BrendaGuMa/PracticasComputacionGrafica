@@ -1,6 +1,6 @@
-//Previo#10
+//Práctica#10
 //Guerra Marcelino Brenda Paola
-//Fecha de entrega: 20 octubre de 2026
+//Fecha de entrega: 25 octubre de 2026
 
 #include <iostream>
 #include <cmath>
@@ -134,7 +134,7 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);*/
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Previo#10 - Brenda Guerra", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Practica#10 - Brenda Guerra", nullptr, nullptr);
 
 	if (nullptr == window)
 	{
