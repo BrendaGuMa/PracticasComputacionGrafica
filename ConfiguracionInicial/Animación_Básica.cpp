@@ -117,6 +117,14 @@ float movBallY = alturaInicio;
 float velocidadBall = 0.5f;
 bool bajandoBall = true;
 
+// Movimiento circular del perro
+float anguloDog = 0.0f;
+float radioDog = 2.0f;       // Tamaño del círculo
+float velocidadDog = 1.5f;   // Velocidad del perro
+
+float posDogX = 0.0f;
+float posDogZ = 0.0f;
+
 
 // Deltatime
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
@@ -295,15 +303,23 @@ int main()
 		
 		//Carga de modelo 
         view = camera.GetViewMatrix();	
+
+		//Suelo
 		model = glm::mat4(1);
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		Piso.Draw(lightingShader);
 
+		//Movimiento circular del perro
 		model = glm::mat4(1);
+
+		model = glm::translate(model, glm::vec3(posDogX, 0.0f, posDogZ));
+
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 0);
+
 		Dog.Draw(lightingShader);
 
+		//Pelota
 		model = glm::mat4(1);
 
 		glEnable(GL_BLEND);
@@ -465,6 +481,7 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 void Animation() {
 	if (AnimBall)
 	{
+		// Movimiento vertical de la pelota
 		if (bajandoBall)
 		{
 			movBallY -= velocidadBall * deltaTime;
@@ -485,6 +502,12 @@ void Animation() {
 				bajandoBall = true;
 			}
 		}
+
+		// Movimiento circular del perro
+		anguloDog += velocidadDog * deltaTime;
+
+		posDogX = radioDog * sin(anguloDog);
+		posDogZ = radioDog * (cos(anguloDog) - 1.0f) + 2.2f;
 	}
 }
 
