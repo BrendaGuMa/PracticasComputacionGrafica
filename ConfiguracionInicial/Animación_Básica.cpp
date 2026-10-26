@@ -116,13 +116,13 @@ float lateralBall = 0.0f;
 float alturaNariz = -0.01f;
 
 // Rebote de la pelota
-float alturaRebote = 1.7f;
-float tiempoRebote = 0.0f;
+float alturaRebote = 1.2f; // Altura
+float tiempoRebote = 1.0f;
 
 float alturaInicio = 1.7f;
 float alturaFinal = 0.0f; // Nariz
 
-float movBallY = alturaInicio;
+float movBallY = 1.7f;
 float velocidadBall = 0.5f;
 bool bajandoBall = true;
 
@@ -133,6 +133,10 @@ float velocidadDog = 1.5f;   // Velocidad del perro
 
 float posDogX = 0.0f;
 float posDogZ = 2.2f;
+
+// Salto del perro
+float alturaSaltoDog = 0.2f; // Altura perro
+float movDogY = 0.0f;
 
 
 // Deltatime
@@ -322,7 +326,7 @@ int main()
 		model = glm::mat4(1);
 
 		// Posición del perro en el círculo
-		model = glm::translate(model, glm::vec3(posDogX, 0.0f, posDogZ));
+		model = glm::translate(model, glm::vec3(posDogX, movDogY, posDogZ));
 
 		// Orientación del perro durante el recorrido
 		model = glm::rotate(model, anguloDog + glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -359,7 +363,7 @@ int main()
 		// Posición de la pelota y movimiento de rebote
 		model = glm::translate(
 			model,
-			glm::vec3(lateralBall, alturaNariz + movBallY, distanciaBall)
+			glm::vec3(lateralBall, alturaNariz + alturaSaltoDog + movBallY, distanciaBall)
 		);
 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -510,10 +514,10 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 		
 	}
 }
-void Animation() {
+void Animation()
+{
 	if (AnimBall)
 	{
-		// Movimiento vertical de la pelota
 		// Movimiento de rebote de la pelota
 		tiempoRebote += deltaTime;
 
@@ -521,6 +525,18 @@ void Animation() {
 		float faseRebote = fmod(tiempoRebote, cicloRebote) / cicloRebote;
 
 		movBallY = alturaRebote * 4.0f * faseRebote * (1.0f - faseRebote);
+
+		// Salto del perro sincronizado con la pelota
+		float contacto = cos(2.0f * 3.14159265f * faseRebote);
+
+		if (contacto > 0.0f)
+		{
+			movDogY = alturaSaltoDog * contacto;
+		}
+		else
+		{
+			movDogY = 0.0f;
+		}
 
 		// Movimiento circular del perro
 		anguloDog += velocidadDog * deltaTime;
