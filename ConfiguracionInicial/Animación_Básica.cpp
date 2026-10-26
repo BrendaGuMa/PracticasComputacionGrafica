@@ -108,10 +108,19 @@ glm::vec3 Light1 = glm::vec3(0);
 bool AnimBall = false;
 
 float posBallX = 0.0f;
-float posBallZ = 0.0f;
+float posBallZ = 2.2f;
+
+// Ajuste de la pelota respecto al perro
+float distanciaBall = 0.009f;
+float lateralBall = 0.0f;
+float alturaNariz = -0.01f;
+
+// Rebote de la pelota
+float alturaRebote = 1.7f;
+float tiempoRebote = 0.0f;
 
 float alturaInicio = 1.7f;
-float alturaFinal = 0.0f;
+float alturaFinal = 0.0f; // Nariz
 
 float movBallY = alturaInicio;
 float velocidadBall = 0.5f;
@@ -331,8 +340,27 @@ int main()
 
 		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 1);
 
-		// Posición de la pelota
-		model = glm::translate(model, glm::vec3(posBallX, movBallY, posBallZ));
+		// Posición de la pelota siguiendo al perro
+		model = glm::mat4(1.0f);
+
+		// Misma posición circular del perro
+		model = glm::translate(
+			model,
+			glm::vec3(posDogX, 0.0f, posDogZ)
+		);
+
+		// Misma orientación del perro
+		model = glm::rotate(
+			model,
+			anguloDog + glm::radians(90.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f)
+		);
+
+		// Posición de la pelota y movimiento de rebote
+		model = glm::translate(
+			model,
+			glm::vec3(lateralBall, alturaNariz + movBallY, distanciaBall)
+		);
 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -486,26 +514,13 @@ void Animation() {
 	if (AnimBall)
 	{
 		// Movimiento vertical de la pelota
-		if (bajandoBall)
-		{
-			movBallY -= velocidadBall * deltaTime;
+		// Movimiento de rebote de la pelota
+		tiempoRebote += deltaTime;
 
-			if (movBallY <= alturaFinal)
-			{
-				movBallY = alturaFinal;
-				bajandoBall = false;
-			}
-		}
-		else
-		{
-			movBallY += velocidadBall * deltaTime;
+		float cicloRebote = 2.0f;
+		float faseRebote = fmod(tiempoRebote, cicloRebote) / cicloRebote;
 
-			if (movBallY >= alturaInicio)
-			{
-				movBallY = alturaInicio;
-				bajandoBall = true;
-			}
-		}
+		movBallY = alturaRebote * 4.0f * faseRebote * (1.0f - faseRebote);
 
 		// Movimiento circular del perro
 		anguloDog += velocidadDog * deltaTime;
