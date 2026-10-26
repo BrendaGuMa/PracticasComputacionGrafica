@@ -117,12 +117,12 @@ float alturaNariz = -0.01f;
 
 // Rebote de la pelota
 float alturaRebote = 1.2f; // Altura
-float tiempoRebote = 1.0f;
+float tiempoRebote = 0.6f;
 
 float alturaInicio = 1.7f;
 float alturaFinal = 0.0f; // Nariz
 
-float movBallY = 1.7f;
+float movBallY = 1.2f;
 float velocidadBall = 0.5f;
 bool bajandoBall = true;
 
@@ -135,9 +135,10 @@ float posDogX = 0.0f;
 float posDogZ = 2.2f;
 
 // Salto del perro
-float alturaSaltoDog = 0.2f; // Altura perro
+float alturaSaltoDog = 0.3f; // Altura perro
 float movDogY = 0.0f;
 
+float inclinacionDog = 0.0f;
 
 // Deltatime
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
@@ -331,6 +332,9 @@ int main()
 		// Orientación del perro durante el recorrido
 		model = glm::rotate(model, anguloDog + glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
+		// Inclinación del cuerpo durante el salto
+		model = glm::rotate(model, glm::radians(inclinacionDog), glm::vec3(1.0f, 0.0f, 0.0f));
+
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 0);
 
@@ -521,22 +525,25 @@ void Animation()
 		// Movimiento de rebote de la pelota
 		tiempoRebote += deltaTime;
 
-		float cicloRebote = 2.0f;
+		float cicloRebote = 1.2f;
 		float faseRebote = fmod(tiempoRebote, cicloRebote) / cicloRebote;
 
 		movBallY = alturaRebote * 4.0f * faseRebote * (1.0f - faseRebote);
 
-		// Salto del perro sincronizado con la pelota
-		float contacto = cos(2.0f * 3.14159265f * faseRebote);
+		// Salto del perro con movimiento suave
+		float faseSalto = cos(2.0f * 3.14159265f * faseRebote);
 
-		if (contacto > 0.0f)
+		if (faseSalto > 0.0f)
 		{
-			movDogY = alturaSaltoDog * contacto;
+			movDogY = alturaSaltoDog * faseSalto * faseSalto;
 		}
 		else
 		{
 			movDogY = 0.0f;
 		}
+
+		// Inclinación del cuerpo durante el salto
+		inclinacionDog = 15.0f * sin(2.0f * 3.14159265f * faseRebote);
 
 		// Movimiento circular del perro
 		anguloDog += velocidadDog * deltaTime;
