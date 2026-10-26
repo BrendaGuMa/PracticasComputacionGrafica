@@ -117,7 +117,7 @@ float alturaNariz = -0.01f;
 
 // Rebote de la pelota
 float alturaRebote = 1.2f; // Altura
-float tiempoRebote = 0.6f;
+float tiempoRebote = 1.2f;
 
 float alturaInicio = 1.7f;
 float alturaFinal = 0.0f; // Nariz
@@ -129,7 +129,7 @@ bool bajandoBall = true;
 // Movimiento circular del perro
 float anguloDog = 0.0f;
 float radioDog = 2.0f;       // Tamaño del círculo
-float velocidadDog = 1.5f;   // Velocidad del perro
+float velocidadDog = 0.8f;   // Velocidad del perro
 
 float posDogX = 0.0f;
 float posDogZ = 2.2f;
@@ -525,7 +525,7 @@ void Animation()
 		// Movimiento de rebote de la pelota
 		tiempoRebote += deltaTime;
 
-		float cicloRebote = 1.2f;
+		float cicloRebote = 2.4f;
 		float faseRebote = fmod(tiempoRebote, cicloRebote) / cicloRebote;
 
 		movBallY = alturaRebote * 4.0f * faseRebote * (1.0f - faseRebote);
