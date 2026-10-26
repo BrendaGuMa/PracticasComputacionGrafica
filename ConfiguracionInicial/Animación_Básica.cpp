@@ -123,7 +123,7 @@ float radioDog = 2.0f;       // Tamaño del círculo
 float velocidadDog = 1.5f;   // Velocidad del perro
 
 float posDogX = 0.0f;
-float posDogZ = 0.0f;
+float posDogZ = 2.2f;
 
 
 // Deltatime
@@ -309,10 +309,14 @@ int main()
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		Piso.Draw(lightingShader);
 
-		//Movimiento circular del perro
+		// Movimiento circular y rotación del perro
 		model = glm::mat4(1);
 
+		// Posición del perro en el círculo
 		model = glm::translate(model, glm::vec3(posDogX, 0.0f, posDogZ));
+
+		// Orientación del perro durante el recorrido
+		model = glm::rotate(model, anguloDog + glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 0);
