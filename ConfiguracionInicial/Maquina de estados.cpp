@@ -524,16 +524,23 @@ void Animation() {
 	}
 	if (dogAnim == 1) { // Walk Animation
 		if (!step) {    // State 1
-			RLegs += 0.03f;
-			FLegs += 0.03f;
-			head += 0.03f;
-			tail += 0.03f;
+			RLegs += 0.003f;
+			FLegs += 0.003f;
+			head += 0.003f;
+			tail += 0.003f;
 
 			if (RLegs > 15.0) // Condition
 				step = true;
 		}
+		else
+		{
+			RLegs -= 0.003f;
+			FLegs -= 0.003f;
+			head -= 0.003f;
+			tail -= 0.003f;
+		}
 
-		dogPos.z += 0.001; 
+		dogPos.z += 0.0001; 
 	}
 	
 	
