@@ -523,7 +523,12 @@ void Animation() {
 		//printf("%f", rotBall);
 	}
 	if (dogAnim == 1) { // Walk Animation
-		dogPos.z += 0.01;
+		if (!step) {
+			RLegs += 0.3f;
+			FLegs += 0.3f;
+			head += 0.3f;
+			tail += 0.3f;
+		}
 	}
 	
 	
