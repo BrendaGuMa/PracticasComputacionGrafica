@@ -510,43 +510,86 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 	}
 	
 }
+
 void Animation() {
 	if (AnimBall)
 	{
 		rotBall += 0.9f;
 		//printf("%f", rotBall);
 	}
-	
+
 	if (AnimDog)
 	{
 		rotDog -= 1.1f;
 		//printf("%f", rotBall);
 	}
-	if (dogAnim == 1) { // Walk Animation
-		if (!step) {    // State 1
-			RLegs += 0.008f;
-			FLegs += 0.008f;
-			head += 0.008f;
-			tail += 0.008f;
 
-			if (RLegs > 15.0) // Condition
+	// Estado 1: caminar hasta el límite
+	if (dogAnim == 1) {
+
+		if (!step) {
+			RLegs += 0.015f;
+			FLegs += 0.015f;
+			head += 0.010f;
+			tail += 0.020f;
+
+			if (RLegs >= 15.0f)
 				step = true;
 		}
-		else
-		{
-			RLegs -= 0.008f;
-			FLegs -= 0.008f;
-			head -= 0.008f;
-			tail -= 0.008f;
-			if (RLegs < -15.0) // Condition
+		else {
+			RLegs -= 0.015f;
+			FLegs -= 0.015f;
+			head -= 0.010f;
+			tail -= 0.020f;
+
+			if (RLegs <= -15.0f)
 				step = false;
 		}
 
-		dogPos.z += 0.0001; 
+		dogPos.z += 0.0001f;
+
+		if (dogPos.z >= 2.3f) {
+			dogPos.z = 2.3f;
+			dogAnim = 2;
+		}
 	}
-	
-	
+
+
+	// Estado 2: regresar a la postura de reposo
+	else if (dogAnim == 2) {
+
+		if (RLegs > 0.0f) {
+			RLegs -= 0.015f;
+			FLegs -= 0.015f;
+		}
+		else if (RLegs < 0.0f) {
+			RLegs += 0.015f;
+			FLegs += 0.015f;
+		}
+
+		if (head > 0.0f)
+			head -= 0.010f;
+		else if (head < 0.0f)
+			head += 0.010f;
+
+		if (tail > 0.0f)
+			tail -= 0.020f;
+		else if (tail < 0.0f)
+			tail += 0.020f;
+
+		// Cuando está casi en reposo, detener por completo
+		if (std::abs(RLegs) <= 0.015f) {
+			RLegs = 0.0f;
+			FLegs = 0.0f;
+			head = 0.0f;
+			tail = 0.0f;
+
+			step = false;
+			dogAnim = 0;
+		}
+	}
 }
+
 
 void MouseCallback(GLFWwindow *window, double xPos, double yPos)
 {
