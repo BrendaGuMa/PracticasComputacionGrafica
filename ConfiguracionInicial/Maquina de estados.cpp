@@ -503,6 +503,11 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 		AnimBall = !AnimBall;
 		
 	}
+	if (keys[GLFW_KEY_B])
+	{
+		dogAnim = 1;
+
+	}
 	
 }
 void Animation() {
@@ -516,6 +521,9 @@ void Animation() {
 	{
 		rotDog -= 0.6f;
 		//printf("%f", rotBall);
+	}
+	if (dogAnim == 1) { // Walk Animation
+		dogPos.z += 0.01;
 	}
 	
 	
