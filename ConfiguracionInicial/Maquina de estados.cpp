@@ -523,12 +523,17 @@ void Animation() {
 		//printf("%f", rotBall);
 	}
 	if (dogAnim == 1) { // Walk Animation
-		if (!step) {
-			RLegs += 0.3f;
-			FLegs += 0.3f;
-			head += 0.3f;
-			tail += 0.3f;
+		if (!step) {    // State 1
+			RLegs += 0.03f;
+			FLegs += 0.03f;
+			head += 0.03f;
+			tail += 0.03f;
+
+			if (RLegs > 15.0) // Condition
+				step = true;
 		}
+
+		dogPos.z += 0.001; 
 	}
 	
 	
