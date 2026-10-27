@@ -513,31 +513,33 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 void Animation() {
 	if (AnimBall)
 	{
-		rotBall += 0.4f;
+		rotBall += 0.9f;
 		//printf("%f", rotBall);
 	}
 	
 	if (AnimDog)
 	{
-		rotDog -= 0.6f;
+		rotDog -= 1.1f;
 		//printf("%f", rotBall);
 	}
 	if (dogAnim == 1) { // Walk Animation
 		if (!step) {    // State 1
-			RLegs += 0.003f;
-			FLegs += 0.003f;
-			head += 0.003f;
-			tail += 0.003f;
+			RLegs += 0.008f;
+			FLegs += 0.008f;
+			head += 0.008f;
+			tail += 0.008f;
 
 			if (RLegs > 15.0) // Condition
 				step = true;
 		}
 		else
 		{
-			RLegs -= 0.003f;
-			FLegs -= 0.003f;
-			head -= 0.003f;
-			tail -= 0.003f;
+			RLegs -= 0.008f;
+			FLegs -= 0.008f;
+			head -= 0.008f;
+			tail -= 0.008f;
+			if (RLegs < -15.0) // Condition
+				step = false;
 		}
 
 		dogPos.z += 0.0001; 
