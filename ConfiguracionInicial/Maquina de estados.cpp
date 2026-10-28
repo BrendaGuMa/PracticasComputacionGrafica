@@ -131,8 +131,10 @@ const float velocidadPatasGiro = 75.0f;
 const float velocidadCabeza = 50.0f;
 
 // Limites provisionales
-const float puntoA = 2.2f; // Cambios
+const float puntoA = 2.2f;
 const float puntoB = 2.2f;
+const float distanciaBC = 6.2f; // Cambios
+float avanceBC = 0.0f;
 
 // Deltatime
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
@@ -592,9 +594,31 @@ void Animation() {
 		// Del punto A al punto B
 		else if (recorrido == 1) {
 			dogPos.x += velocidadPerro * deltaTime;
-
 			if (dogPos.x >= puntoB) {
 				dogPos.x = puntoB;
+				RLegs = 0.0f;
+				FLegs = 0.0f;
+				head = 0.0f;
+				tail = 0.0f;
+				step = false;
+
+				dogAnim = 2;     // Iniciar giro a la izquierda
+				faseGiro = 0;
+			}
+		}
+
+		else if (recorrido == 2) {
+
+			float movimiento = velocidadPerro * deltaTime;
+
+			// Avanzar en diagonal segun la orientacion
+			dogPos.x += sin(glm::radians(dogRot)) * movimiento;
+			dogPos.z += cos(glm::radians(dogRot)) * movimiento;
+
+			avanceBC += movimiento;
+
+			// Llegada al punto C
+			if (avanceBC >= distanciaBC) {
 				dogAnim = 0;
 
 				RLegs = 0.0f;
@@ -647,8 +671,12 @@ void Animation() {
 			// Rotacion del cuerpo
 			dogRot += velocidadGiro * deltaTime;
 
-			if (dogRot >= 90.0f) {
-				dogRot = 90.0f;
+			// Primer giro: 90 grados
+			// Segundo giro: 135 grados acumulados
+			float limiteGiro = (recorrido == 0) ? 90.0f : 225.0f;
+
+			if (dogRot >= limiteGiro) {
+				dogRot = limiteGiro;
 				faseGiro = 3;
 			}
 		}
@@ -684,7 +712,9 @@ void Animation() {
 				FLegs == 0.0f) {
 
 				step = false;
-				recorrido = 1;
+
+				// Pasar al siguiente tramo del recorrido
+				recorrido++;
 				dogAnim = 1;
 			}
 		}
