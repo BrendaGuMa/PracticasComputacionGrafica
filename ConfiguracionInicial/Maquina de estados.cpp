@@ -117,7 +117,22 @@ glm::vec3 dogPos (0.0f,0.0f,0.0f);
 float dogRot = 0.0f;
 bool step = false;
 
+// Variables para el recorrido
+int recorrido = 0;
+int faseGiro = 0;
+float giroCabeza = 0.0f;
+float tiempoGiroCabeza = 0.0f;
 
+// Velocidades
+const float velocidadPerro = 0.45f;
+const float velocidadPatas = 85.0f;
+const float velocidadGiro = 65.0f;
+const float velocidadPatasGiro = 75.0f;
+const float velocidadCabeza = 50.0f;
+
+// Limites provisionales
+const float puntoA = 2.2f; // Cambios
+const float puntoB = 2.2f;
 
 // Deltatime
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
@@ -317,7 +332,13 @@ int main()
 		//Head
 		model = modelTemp;
 		model = glm::translate(model, glm::vec3(0.0f, 0.093f, 0.208f));
+
+		// Giro de la cabeza hacia los lados
+		model = glm::rotate(model, glm::radians(giroCabeza), glm::vec3(0.0f, 1.0f, 0.0f));
+
+		// Movimiento original de la cabeza
 		model = glm::rotate(model, glm::radians(head), glm::vec3(0.0f, 0.0f, 1.0f));
+
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		HeadDog.Draw(lightingShader);
 		//Tail 
@@ -503,92 +524,173 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 		AnimBall = !AnimBall;
 		
 	}
-	if (keys[GLFW_KEY_B])
+	if (key == GLFW_KEY_B && action == GLFW_PRESS
+		&& recorrido == 0 && dogAnim == 0)
 	{
 		dogAnim = 1;
-
 	}
-	
 }
 
+
 void Animation() {
-	if (AnimBall)
-	{
+
+	// Animacion de la pelota
+	if (AnimBall) {
 		rotBall += 0.9f;
-		//printf("%f", rotBall);
 	}
 
-	if (AnimDog)
-	{
+	if (AnimDog) {
 		rotDog -= 1.1f;
-		//printf("%f", rotBall);
 	}
 
-	// Estado 1: caminar hasta el límite
+	// Movimiento de patas, cabeza y cola
 	if (dogAnim == 1) {
 
 		if (!step) {
-			RLegs += 0.015f;
-			FLegs += 0.015f;
-			head += 0.010f;
-			tail += 0.020f;
+			RLegs += velocidadPatas * deltaTime;
+			FLegs += velocidadPatas * deltaTime;
+			head += velocidadPatas * 0.67f * deltaTime;
+			tail += velocidadPatas * 1.33f * deltaTime;
 
 			if (RLegs >= 15.0f)
 				step = true;
 		}
 		else {
-			RLegs -= 0.015f;
-			FLegs -= 0.015f;
-			head -= 0.010f;
-			tail -= 0.020f;
+			RLegs -= velocidadPatas * deltaTime;
+			FLegs -= velocidadPatas * deltaTime;
+			head -= velocidadPatas * 0.67f * deltaTime;
+			tail -= velocidadPatas * 1.33f * deltaTime;
 
 			if (RLegs <= -15.0f)
 				step = false;
 		}
-
-		dogPos.z += 0.0001f;
-
-		if (dogPos.z >= 2.3f) {
-			dogPos.z = 2.3f;
-			dogAnim = 2;
-		}
 	}
 
+	// ESTADO 1: CAMINAR
+	if (dogAnim == 1) {
 
-	// Estado 2: regresar a la postura de reposo
+		// Del centro al punto A
+		if (recorrido == 0) {
+			dogPos.z += velocidadPerro * deltaTime;
+
+			if (dogPos.z >= puntoA) {
+				dogPos.z = puntoA;
+
+				// Recuperar la postura de reposo
+				RLegs = 0.0f;
+				FLegs = 0.0f;
+				head = 0.0f;
+				tail = 0.0f;
+				step = false;
+
+				// Iniciar el giro
+				dogAnim = 2;
+				faseGiro = 0;
+			}
+		}
+
+		// Del punto A al punto B
+		else if (recorrido == 1) {
+			dogPos.x += velocidadPerro * deltaTime;
+
+			if (dogPos.x >= puntoB) {
+				dogPos.x = puntoB;
+				dogAnim = 0;
+
+				RLegs = 0.0f;
+				FLegs = 0.0f;
+				head = 0.0f;
+				tail = 0.0f;
+				step = false;
+			}
+		}
+	}
+	// ESTADO 2
 	else if (dogAnim == 2) {
+		// Fase 0: girar la cabeza lentamente
+		if (faseGiro == 0) {
+			giroCabeza += velocidadCabeza * deltaTime;
 
-		if (RLegs > 0.0f) {
-			RLegs -= 0.015f;
-			FLegs -= 0.015f;
+			if (giroCabeza >= 35.0f) {
+				giroCabeza = 35.0f;
+				tiempoGiroCabeza = 0.0f;
+				faseGiro = 1;
+			}
 		}
-		else if (RLegs < 0.0f) {
-			RLegs += 0.015f;
-			FLegs += 0.015f;
+		// Fase 1: mantener la mirada hacia la izquierda
+		else if (faseGiro == 1) {
+			tiempoGiroCabeza += deltaTime;
+
+			if (tiempoGiroCabeza >= 0.5f) {
+				faseGiro = 2;
+			}
 		}
+		// Fase 2: girar el cuerpo con pequenos pasos
+		else if (faseGiro == 2) {
 
-		if (head > 0.0f)
-			head -= 0.010f;
-		else if (head < 0.0f)
-			head += 0.010f;
+			// Movimiento suave de las patas
+			if (!step) {
+				RLegs += velocidadPatasGiro * deltaTime;
+				FLegs += velocidadPatasGiro * deltaTime;
 
-		if (tail > 0.0f)
-			tail -= 0.020f;
-		else if (tail < 0.0f)
-			tail += 0.020f;
+				if (RLegs >= 12.0f)
+					step = true;
+			}
+			else {
+				RLegs -= velocidadPatasGiro * deltaTime;
+				FLegs -= velocidadPatasGiro * deltaTime;
 
-		// Cuando está casi en reposo, detener por completo
-		if (std::abs(RLegs) <= 0.015f) {
-			RLegs = 0.0f;
-			FLegs = 0.0f;
-			head = 0.0f;
-			tail = 0.0f;
+				if (RLegs <= -12.0f)
+					step = false;
+			}
 
-			step = false;
-			dogAnim = 0;
+			// Rotacion del cuerpo
+			dogRot += velocidadGiro * deltaTime;
+
+			if (dogRot >= 90.0f) {
+				dogRot = 90.0f;
+				faseGiro = 3;
+			}
+		}
+		// Fase 3: recuperar la postura antes de caminar
+		else if (faseGiro == 3) {
+
+			// Regresar la cabeza al frente
+			giroCabeza -= velocidadCabeza * deltaTime;
+
+			if (giroCabeza < 0.0f)
+				giroCabeza = 0.0f;
+
+			// Regresar las patas suavemente a cero
+			float ajuste = velocidadPatasGiro * deltaTime;
+
+			if (RLegs > ajuste)
+				RLegs -= ajuste;
+			else if (RLegs < -ajuste)
+				RLegs += ajuste;
+			else
+				RLegs = 0.0f;
+
+			if (FLegs > ajuste)
+				FLegs -= ajuste;
+			else if (FLegs < -ajuste)
+				FLegs += ajuste;
+			else
+				FLegs = 0.0f;
+
+			// Continuar cuando cabeza y patas esten listas
+			if (giroCabeza == 0.0f &&
+				RLegs == 0.0f &&
+				FLegs == 0.0f) {
+
+				step = false;
+				recorrido = 1;
+				dogAnim = 1;
+			}
 		}
 	}
 }
+
 
 
 void MouseCallback(GLFWwindow *window, double xPos, double yPos)
