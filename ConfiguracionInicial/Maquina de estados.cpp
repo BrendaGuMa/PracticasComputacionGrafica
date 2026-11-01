@@ -526,9 +526,30 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 		AnimBall = !AnimBall;
 		
 	}
-	if (key == GLFW_KEY_B && action == GLFW_PRESS
-		&& recorrido == 0 && dogAnim == 0)
+
+	if (key == GLFW_KEY_B && action == GLFW_PRESS && dogAnim == 0)
 	{
+		// Reiniciar el recorrido
+		recorrido = 0;
+		faseGiro = 0;
+
+		// Reiniciar las posiciones
+		dogPos = glm::vec3(0.0f, 0.0f, 0.0f);
+		dogRot = 0.0f;
+		giroCabeza = 0.0f;
+		tiempoGiroCabeza = 0.0f;
+
+		// Reiniciar las extremidades
+		RLegs = 0.0f;
+		FLegs = 0.0f;
+		head = 0.0f;
+		tail = 0.0f;
+		step = false;
+
+		// Reiniciar los recorridos diagonales
+		avanceBC = 0.0f;
+
+		// Iniciar nuevamente la caminata
 		dogAnim = 1;
 	}
 }
