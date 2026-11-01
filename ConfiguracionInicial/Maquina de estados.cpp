@@ -642,22 +642,83 @@ void Animation() {
 			// Caminar hacia la derecha
 			dogPos.x += velocidadPerro * deltaTime;
 
+
 			// Llegada al punto D
 			if (dogPos.x >= puntoB) {
 				dogPos.x = puntoB;
 
+				// Detener el movimiento de las extremidades
 				RLegs = 0.0f;
 				FLegs = 0.0f;
 				head = 0.0f;
 				tail = 0.0f;
 				step = false;
 
-				dogAnim = 0;
+				// Iniciar el ultimo giro hacia la derecha
+
+				dogAnim = 3;
+				faseGiro = 0;
+			}
+		}
+
+		// Del punto D al punto E (origen)
+		else if (recorrido == 4) {
+
+			float movimiento = velocidadPerro * deltaTime;
+
+			// Calcular la direccion hacia el centro
+			glm::vec2 haciaOrigen(-dogPos.x, -dogPos.z);
+			float distancia = glm::length(haciaOrigen);
+
+
+			if (distancia <= movimiento) {
+
+				// Llegar exactamente al centro
+				dogPos.x = 0.0f;
+				dogPos.z = 0.0f;
+
+				// Iniciar la preparacion para el ultimo giro
+				dogAnim = 2;
+				faseGiro = -1;
+			}
+			else {
+
+				// Caminar en diagonal hacia el origen
+				glm::vec2 direccion = glm::normalize(haciaOrigen);
+
+				dogPos.x += direccion.x * movimiento;
+				dogPos.z += direccion.y * movimiento;
 			}
 		}
 	}
-	// ESTADO 2
 	else if (dogAnim == 2) {
+		// Fase -1: preparar la postura al llegar a E
+		if (faseGiro == -1) {
+			float ajuste = velocidadPatasGiro * deltaTime;
+			// Regresar suavemente los movimientos a cero
+			auto acercarCero = [ajuste](float valor) -> float {
+				if (valor > ajuste)
+					return valor - ajuste;
+				else if (valor < -ajuste)
+					return valor + ajuste;
+				else
+					return 0.0f;
+				};
+
+			RLegs = acercarCero(RLegs);
+			FLegs = acercarCero(FLegs);
+			head = acercarCero(head);
+			tail = acercarCero(tail);
+
+			if (RLegs == 0.0f &&
+				FLegs == 0.0f &&
+				head == 0.0f &&
+				tail == 0.0f) {
+
+				step = false;
+				faseGiro = 0;
+			}
+		}
 		// Fase 0: girar la cabeza lentamente
 		if (faseGiro == 0) {
 			giroCabeza += velocidadCabeza * deltaTime;
@@ -698,9 +759,20 @@ void Animation() {
 			// Rotacion del cuerpo
 			dogRot += velocidadGiro * deltaTime;
 
-			// Primer giro: 90 grados
-			// Segundo giro: 135 grados acumulados
-			float limiteGiro = (recorrido == 0) ? 90.0f : 225.0f;
+			// A: 90 grados
+			// B: 225 grados
+			// E: regresar a 0 grados
+			float limiteGiro;
+
+			if (recorrido == 0) {
+				limiteGiro = 90.0f;
+			}
+			else if (recorrido == 1) {
+				limiteGiro = 225.0f;
+			}
+			else {
+				limiteGiro = 0.0f;
+			}
 
 			if (dogRot >= limiteGiro) {
 				dogRot = limiteGiro;
@@ -741,8 +813,20 @@ void Animation() {
 				step = false;
 
 				// Pasar al siguiente tramo del recorrido
-				recorrido++;
-				dogAnim = 1;
+				// Comprobar si termino el recorrido
+				if (recorrido == 4) {
+
+					// Finalizar la animacion en el punto E
+					recorrido = 5;
+					dogAnim = 0;
+				}
+				else {
+
+					// Continuar hacia el siguiente punto
+					recorrido++;
+					dogAnim = 1;
+				}
+
 			}
 		}
 	}
@@ -788,11 +872,16 @@ void Animation() {
 					step = false;
 			}
 
+
 			// Girar 135 grados hacia la derecha
 			dogRot -= velocidadGiro * deltaTime;
 
-			if (dogRot <= 90.0f) {
-				dogRot = 90.0f;
+			// En C termina en 90 grados
+			// En D termina en -45 grados
+			float limiteDerecha = (recorrido == 2) ? 90.0f : -45.0f;
+
+			if (dogRot <= limiteDerecha) {
+				dogRot = limiteDerecha;
 				faseGiro = 3;
 			}
 		}
@@ -829,7 +918,7 @@ void Animation() {
 				FLegs == 0.0f) {
 
 				step = false;
-				recorrido = 3;
+				recorrido++;
 				dogAnim = 1;
 			}
 		}
