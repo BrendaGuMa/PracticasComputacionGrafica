@@ -617,15 +617,42 @@ void Animation() {
 
 			avanceBC += movimiento;
 
+
+
 			// Llegada al punto C
 			if (avanceBC >= distanciaBC) {
-				dogAnim = 0;
+				avanceBC = distanciaBC;
+
+				// Detener el movimiento de las extremidades
+				RLegs = 0.0f;
+				FLegs = 0.0f;
+				head = 0.0f;
+				tail = 0.0f;
+				step = false;
+
+				// Activar el giro hacia la derecha
+				dogAnim = 3;
+				faseGiro = 0;
+			}
+		}
+
+		// Del punto C al punto D
+		else if (recorrido == 3) {
+
+			// Caminar hacia la derecha
+			dogPos.x += velocidadPerro * deltaTime;
+
+			// Llegada al punto D
+			if (dogPos.x >= puntoB) {
+				dogPos.x = puntoB;
 
 				RLegs = 0.0f;
 				FLegs = 0.0f;
 				head = 0.0f;
 				tail = 0.0f;
 				step = false;
+
+				dogAnim = 0;
 			}
 		}
 	}
@@ -715,6 +742,94 @@ void Animation() {
 
 				// Pasar al siguiente tramo del recorrido
 				recorrido++;
+				dogAnim = 1;
+			}
+		}
+	}
+
+	// ESTADO 3: GIRAR A LA DERECHA
+	else if (dogAnim == 3) {
+
+		// Fase 0: girar la cabeza hacia la derecha
+		if (faseGiro == 0) {
+			giroCabeza -= velocidadCabeza * deltaTime;
+
+			if (giroCabeza <= -35.0f) {
+				giroCabeza = -35.0f;
+				tiempoGiroCabeza = 0.0f;
+				faseGiro = 1;
+			}
+		}
+
+		// Fase 1: mantener la mirada
+		else if (faseGiro == 1) {
+			tiempoGiroCabeza += deltaTime;
+
+			if (tiempoGiroCabeza >= 0.5f) {
+				faseGiro = 2;
+			}
+		}
+
+		// Fase 2: girar el cuerpo con pequenos pasos
+		else if (faseGiro == 2) {
+
+			if (!step) {
+				RLegs += velocidadPatasGiro * deltaTime;
+				FLegs += velocidadPatasGiro * deltaTime;
+
+				if (RLegs >= 12.0f)
+					step = true;
+			}
+			else {
+				RLegs -= velocidadPatasGiro * deltaTime;
+				FLegs -= velocidadPatasGiro * deltaTime;
+
+				if (RLegs <= -12.0f)
+					step = false;
+			}
+
+			// Girar 135 grados hacia la derecha
+			dogRot -= velocidadGiro * deltaTime;
+
+			if (dogRot <= 90.0f) {
+				dogRot = 90.0f;
+				faseGiro = 3;
+			}
+		}
+
+		// Fase 3: recuperar la postura
+		else if (faseGiro == 3) {
+
+			// Regresar la cabeza al frente
+			giroCabeza += velocidadCabeza * deltaTime;
+
+			if (giroCabeza > 0.0f)
+				giroCabeza = 0.0f;
+
+			// Regresar las patas a su posicion
+			float ajuste = velocidadPatasGiro * deltaTime;
+
+			if (RLegs > ajuste)
+				RLegs -= ajuste;
+			else if (RLegs < -ajuste)
+				RLegs += ajuste;
+			else
+				RLegs = 0.0f;
+
+			if (FLegs > ajuste)
+				FLegs -= ajuste;
+			else if (FLegs < -ajuste)
+				FLegs += ajuste;
+			else
+				FLegs = 0.0f;
+
+			// Continuar al terminar el giro
+			if (giroCabeza == 0.0f &&
+				RLegs == 0.0f &&
+				FLegs == 0.0f) {
+
+				step = false;
+				recorrido = 3;
 				dogAnim = 1;
 			}
 		}
