@@ -142,6 +142,8 @@ typedef struct _frame {
 	float backLeftLegInc;
 	float backRightLeg;
 	float backRightLegInc;
+	float tail;
+	float tailInc;
 
 
 }FRAME;
@@ -166,6 +168,7 @@ void saveFrame(void)
 	KeyFrame[FrameIndex].frontRightLeg = frontRightLeg;
 	KeyFrame[FrameIndex].backLeftLeg = backLeftLeg;
 	KeyFrame[FrameIndex].backRightLeg = backRightLeg;
+	KeyFrame[FrameIndex].tail = tail;
 
 
 	FrameIndex++;
@@ -181,6 +184,7 @@ void resetElements(void)
 	frontRightLeg = KeyFrame[0].frontRightLeg;
 	backLeftLeg = KeyFrame[0].backLeftLeg;
 	backRightLeg = KeyFrame[0].backRightLeg;
+	tail = KeyFrame[0].tail;
 
 	rotDog = KeyFrame[0].rotDog;
 
@@ -206,6 +210,9 @@ void interpolation(void)
 	KeyFrame[playIndex].backRightLegInc =
 		(KeyFrame[playIndex + 1].backRightLeg -
 			KeyFrame[playIndex].backRightLeg) / i_max_steps;
+	KeyFrame[playIndex].tailInc =
+		(KeyFrame[playIndex + 1].tail -
+			KeyFrame[playIndex].tail) / i_max_steps;
 
 	KeyFrame[playIndex].rotDogInc = (KeyFrame[playIndex + 1].rotDog - KeyFrame[playIndex].rotDog) / i_max_steps;
 
@@ -301,6 +308,8 @@ int main()
 		KeyFrame[i].backLeftLegInc = 0;
 		KeyFrame[i].backRightLeg = 0;
 		KeyFrame[i].backRightLegInc = 0;
+		KeyFrame[i].tail = 0;
+		KeyFrame[i].tailInc = 0;
 	}
 
 
@@ -578,6 +587,17 @@ void DoMovement()
 	{
 		backRightLeg -= 0.2f;
 	}
+
+	//Tail Controls
+	if (keys[GLFW_KEY_B])
+	{
+		tail += 0.2f;
+	}
+
+	if (keys[GLFW_KEY_N])
+	{
+		tail -= 0.2f;
+	}
 	
 	if (keys[GLFW_KEY_4])
 	{
@@ -784,6 +804,7 @@ void Animation() {
 			frontRightLeg += KeyFrame[playIndex].frontRightLegInc;
 			backLeftLeg += KeyFrame[playIndex].backLeftLegInc;
 			backRightLeg += KeyFrame[playIndex].backRightLegInc;
+			tail += KeyFrame[playIndex].tailInc;
 
 			i_curr_steps++;
 		}
