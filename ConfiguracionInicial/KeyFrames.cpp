@@ -109,7 +109,8 @@ float rotDog = 0.0f;
 int dogAnim = 0;
 float frontLeftLeg = 0.0f;
 float frontRightLeg = 0.0f;
-float RLegs = 0.0f;
+float backLeftLeg = 0.0f;
+float backRightLeg = 0.0f;
 float head = 0.0f;
 float tail = 0.0f;
 
@@ -137,6 +138,10 @@ typedef struct _frame {
 	float frontLeftLegInc;
 	float frontRightLeg;
 	float frontRightLegInc;
+	float backLeftLeg;
+	float backLeftLegInc;
+	float backRightLeg;
+	float backRightLegInc;
 
 
 }FRAME;
@@ -159,6 +164,8 @@ void saveFrame(void)
 	KeyFrame[FrameIndex].head = head;
 	KeyFrame[FrameIndex].frontLeftLeg = frontLeftLeg;
 	KeyFrame[FrameIndex].frontRightLeg = frontRightLeg;
+	KeyFrame[FrameIndex].backLeftLeg = backLeftLeg;
+	KeyFrame[FrameIndex].backRightLeg = backRightLeg;
 
 
 	FrameIndex++;
@@ -172,6 +179,8 @@ void resetElements(void)
 	head = KeyFrame[0].head;
 	frontLeftLeg = KeyFrame[0].frontLeftLeg;
 	frontRightLeg = KeyFrame[0].frontRightLeg;
+	backLeftLeg = KeyFrame[0].backLeftLeg;
+	backRightLeg = KeyFrame[0].backRightLeg;
 
 	rotDog = KeyFrame[0].rotDog;
 
@@ -190,6 +199,13 @@ void interpolation(void)
 	KeyFrame[playIndex].frontRightLegInc =
 		(KeyFrame[playIndex + 1].frontRightLeg -
 			KeyFrame[playIndex].frontRightLeg) / i_max_steps;
+	KeyFrame[playIndex].backLeftLegInc =
+		(KeyFrame[playIndex + 1].backLeftLeg -
+			KeyFrame[playIndex].backLeftLeg) / i_max_steps;
+
+	KeyFrame[playIndex].backRightLegInc =
+		(KeyFrame[playIndex + 1].backRightLeg -
+			KeyFrame[playIndex].backRightLeg) / i_max_steps;
 
 	KeyFrame[playIndex].rotDogInc = (KeyFrame[playIndex + 1].rotDog - KeyFrame[playIndex].rotDog) / i_max_steps;
 
@@ -281,6 +297,10 @@ int main()
 		KeyFrame[i].frontLeftLegInc = 0;
 		KeyFrame[i].frontRightLeg = 0;
 		KeyFrame[i].frontRightLegInc = 0;
+		KeyFrame[i].backLeftLeg = 0;
+		KeyFrame[i].backLeftLegInc = 0;
+		KeyFrame[i].backRightLeg = 0;
+		KeyFrame[i].backRightLegInc = 0;
 	}
 
 
@@ -446,13 +466,15 @@ int main()
 		//Back Left Leg
 		model = modelTemp; 
 		model = glm::translate(model, glm::vec3(0.082f, -0.046, -0.218)); 
-		model = glm::rotate(model, glm::radians(RLegs), glm::vec3(1.0f, 0.0f, 0.0f)); 
+		model = glm::rotate(model, glm::radians(backLeftLeg),
+			glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)); 
 		B_LeftLeg.Draw(lightingShader);
 		//Back Right Leg
 		model = modelTemp; 
 		model = glm::translate(model, glm::vec3(-0.083f, -0.057f, -0.231f));
-		model = glm::rotate(model, glm::radians(RLegs), glm::vec3(-1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(backRightLeg),
+			glm::vec3(-1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		B_RightLeg.Draw(lightingShader); 
 
@@ -534,6 +556,27 @@ void DoMovement()
 	if (keys[GLFW_KEY_9])
 	{
 		frontRightLeg -= 0.2f;
+	}
+
+	//Back Legs Controls
+	if (keys[GLFW_KEY_Z])
+	{
+		backLeftLeg += 0.2f;
+	}
+
+	if (keys[GLFW_KEY_X])
+	{
+		backLeftLeg -= 0.2f;
+	}
+
+	if (keys[GLFW_KEY_C])
+	{
+		backRightLeg += 0.2f;
+	}
+
+	if (keys[GLFW_KEY_V])
+	{
+		backRightLeg -= 0.2f;
 	}
 	
 	if (keys[GLFW_KEY_4])
@@ -739,6 +782,8 @@ void Animation() {
 			rotDog += KeyFrame[playIndex].rotDogInc;
 			frontLeftLeg += KeyFrame[playIndex].frontLeftLegInc;
 			frontRightLeg += KeyFrame[playIndex].frontRightLegInc;
+			backLeftLeg += KeyFrame[playIndex].backLeftLegInc;
+			backRightLeg += KeyFrame[playIndex].backRightLegInc;
 
 			i_curr_steps++;
 		}
