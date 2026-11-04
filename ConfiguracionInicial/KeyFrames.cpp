@@ -316,6 +316,50 @@ void clearAnimation()
 	printf("Animacion borrada. Perro reiniciado.\n");
 }
 
+void deleteLastFrame()
+{
+	if (play)
+	{
+		printf("Deten la animacion antes de borrar\n");
+		return;
+	}
+
+	if (FrameIndex > 0)
+	{
+		FrameIndex--;
+
+		KeyFrame[FrameIndex] = FRAME{};
+
+		if (FrameIndex > 0)
+		{
+			int last = FrameIndex - 1;
+
+			dogPosX = KeyFrame[last].dogPosX;
+			dogPosY = KeyFrame[last].dogPosY;
+			dogPosZ = KeyFrame[last].dogPosZ;
+
+			rotDog = KeyFrame[last].rotDog;
+			head = KeyFrame[last].head;
+			tail = KeyFrame[last].tail;
+
+			frontLeftLeg = KeyFrame[last].frontLeftLeg;
+			frontRightLeg = KeyFrame[last].frontRightLeg;
+			backLeftLeg = KeyFrame[last].backLeftLeg;
+			backRightLeg = KeyFrame[last].backRightLeg;
+
+			bodyTilt = KeyFrame[last].bodyTilt;
+			bodyRoll = KeyFrame[last].bodyRoll;
+			headRoll = KeyFrame[last].headRoll;
+		}
+
+		printf("Ultimo KeyFrame eliminado. Restantes: %d\n", FrameIndex);
+	}
+	else
+	{
+		printf("No hay KeyFrames para eliminar\n");
+	}
+}
+
 void resetElements(void)
 {
 	dogPosX = KeyFrame[0].dogPosX;
@@ -960,6 +1004,12 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 	if (key == GLFW_KEY_0 && action == GLFW_PRESS)
 	{
 		clearAnimation();
+	}
+
+	// Eliminar el ultimo KeyFrame
+	if (key == GLFW_KEY_BACKSPACE && action == GLFW_PRESS)
+	{
+		deleteLastFrame();
 	}
 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
