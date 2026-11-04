@@ -114,6 +114,8 @@ float backLeftLeg = 0.0f;
 float backRightLeg = 0.0f;
 float head = 0.0f;
 float tail = 0.0f;
+float bodyRoll = 0.0f;
+float headRoll = 0.0f;
 
 
 
@@ -147,6 +149,10 @@ typedef struct _frame {
 	float tailInc;
 	float bodyTilt;
 	float bodyTiltInc;
+	float bodyRoll;
+	float bodyRollInc;
+	float headRoll;
+	float headRollInc;
 
 
 }FRAME;
@@ -173,6 +179,8 @@ void saveFrame(void)
 	KeyFrame[FrameIndex].backRightLeg = backRightLeg;
 	KeyFrame[FrameIndex].tail = tail;
 	KeyFrame[FrameIndex].bodyTilt = bodyTilt;
+	KeyFrame[FrameIndex].bodyRoll = bodyRoll;
+	KeyFrame[FrameIndex].headRoll = headRoll;
 
 
 	FrameIndex++;
@@ -190,6 +198,8 @@ void resetElements(void)
 	backRightLeg = KeyFrame[0].backRightLeg;
 	tail = KeyFrame[0].tail;
 	bodyTilt = KeyFrame[0].bodyTilt;
+	bodyRoll = KeyFrame[0].bodyRoll;
+	headRoll = KeyFrame[0].headRoll;
 
 	rotDog = KeyFrame[0].rotDog;
 
@@ -221,6 +231,13 @@ void interpolation(void)
 	KeyFrame[playIndex].bodyTiltInc =
 		(KeyFrame[playIndex + 1].bodyTilt -
 			KeyFrame[playIndex].bodyTilt) / i_max_steps;
+	KeyFrame[playIndex].bodyRollInc =
+		(KeyFrame[playIndex + 1].bodyRoll -
+			KeyFrame[playIndex].bodyRoll) / i_max_steps;
+
+	KeyFrame[playIndex].headRollInc =
+		(KeyFrame[playIndex + 1].headRoll -
+			KeyFrame[playIndex].headRoll) / i_max_steps;
 
 	KeyFrame[playIndex].rotDogInc = (KeyFrame[playIndex + 1].rotDog - KeyFrame[playIndex].rotDog) / i_max_steps;
 
@@ -320,6 +337,10 @@ int main()
 		KeyFrame[i].tailInc = 0;
 		KeyFrame[i].bodyTilt = 0;
 		KeyFrame[i].bodyTiltInc = 0;
+		KeyFrame[i].bodyRoll = 0;
+		KeyFrame[i].bodyRollInc = 0;
+		KeyFrame[i].headRoll = 0;
+		KeyFrame[i].headRollInc = 0;
 	}
 
 
@@ -455,6 +476,7 @@ int main()
 		modelTemp = model = glm::translate(model, glm::vec3(dogPosX, dogPosY, dogPosZ));
 		modelTemp = model = glm::rotate(model, glm::radians(rotDog), glm::vec3(0.0f, 1.0f, 0.0f));
 		modelTemp = model = glm::rotate(model, glm::radians(bodyTilt), glm::vec3(1.0f, 0.0f, 0.0f));
+		modelTemp = model = glm::rotate(model, glm::radians(bodyRoll), glm::vec3(0.0f, 0.0f, 1.0f));
 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		DogBody.Draw(lightingShader);
@@ -462,6 +484,7 @@ int main()
 		model = modelTemp;
 		model = glm::translate(model, glm::vec3(0.0f, 0.093f, 0.208f));
 		model = glm::rotate(model, glm::radians(head), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(headRoll), glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		HeadDog.Draw(lightingShader);
 		//Tail 
@@ -470,7 +493,7 @@ int main()
 		model = glm::rotate(model, glm::radians(tail), glm::vec3(0.0f, 0.0f, -1.0f)); 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)); 
 		DogTail.Draw(lightingShader);
-		//Front Left Leg
+		//Front Left 
 		model = modelTemp;
 		model = glm::translate(model, glm::vec3(0.112f, -0.044f, 0.074f));
 		model = glm::rotate(model, glm::radians(frontLeftLeg),
@@ -633,6 +656,28 @@ void DoMovement()
 		dogPosY -= 0.002f;
 	}
 	
+	// Body Side Rotation Controls
+	if (keys[GLFW_KEY_I])
+	{
+		bodyRoll += 0.2f;
+	}
+
+	if (keys[GLFW_KEY_O])
+	{
+		bodyRoll -= 0.2f;
+	}
+
+	// Head Side Rotation Controls
+	if (keys[GLFW_KEY_COMMA])
+	{
+		headRoll += 0.2f;
+	}
+
+	if (keys[GLFW_KEY_PERIOD])
+	{
+		headRoll -= 0.2f;
+	}
+
 	if (keys[GLFW_KEY_4])
 	{
 
@@ -739,41 +784,37 @@ void DoMovement()
 }
 
 // Is called whenever a key is pressed/released via GLFW
-void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode)
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-
-	if (keys[GLFW_KEY_L])
+	if (key == GLFW_KEY_L && action == GLFW_PRESS)
 	{
-		if (play == false && (FrameIndex > 1))
+		if (!play && FrameIndex > 1)
 		{
+			playIndex = 0;
+			i_curr_steps = 0;
 
 			resetElements();
-			//First Interpolation				
 			interpolation();
 
 			play = true;
-			playIndex = 0;
-			i_curr_steps = 0;
+			printf("Inicia animacion\n");
 		}
-		else
+		else if (play)
 		{
 			play = false;
+			printf("Animacion detenida\n");
 		}
-
 	}
 
-	if (keys[GLFW_KEY_K])
+	if (key == GLFW_KEY_K && action == GLFW_PRESS)
 	{
-		if (FrameIndex < MAX_FRAMES)
+		if (FrameIndex < MAX_FRAMES && !play)
 		{
 			saveFrame();
 		}
-
 	}
 
-
-
-	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
@@ -790,21 +831,19 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 		}
 	}
 
-	if (keys[GLFW_KEY_SPACE])
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
 	{
 		active = !active;
+
 		if (active)
 		{
 			Light1 = glm::vec3(0.2f, 0.8f, 1.0f);
-			
 		}
 		else
 		{
-			Light1 = glm::vec3(0);//Cuado es solo un valor en los 3 vectores pueden dejar solo una componente
+			Light1 = glm::vec3(0);
 		}
 	}
-	
-	
 }
 void Animation() {
 
@@ -840,6 +879,8 @@ void Animation() {
 			backRightLeg += KeyFrame[playIndex].backRightLegInc;
 			tail += KeyFrame[playIndex].tailInc;
 			bodyTilt += KeyFrame[playIndex].bodyTiltInc;
+			bodyRoll += KeyFrame[playIndex].bodyRollInc;
+			headRoll += KeyFrame[playIndex].headRollInc;
 
 			i_curr_steps++;
 		}
