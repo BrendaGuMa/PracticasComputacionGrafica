@@ -124,7 +124,7 @@ float headRoll = 0.0f;
 //KeyFrames
 float dogPosX , dogPosY , dogPosZ  ;
 
-#define MAX_FRAMES 9
+#define MAX_FRAMES 30
 int i_max_steps = 500;
 int i_curr_steps = 0;
 typedef struct _frame {
