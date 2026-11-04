@@ -1,9 +1,10 @@
-//Previo#12
+//Práctica#12
 //Guerra Marcelino Brenda Paola
-//Fecha de entrega: 3 noviembre de 2026
+//Fecha de entrega: 8 noviembre de 2026
 
 #include <iostream>
 #include <cmath>
+#include <fstream>
 
 // GLEW
 #include <GL/glew.h>
@@ -34,6 +35,7 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 void MouseCallback(GLFWwindow *window, double xPos, double yPos);
 void DoMovement();
 void Animation();
+void resetElements();
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
@@ -184,6 +186,134 @@ void saveFrame(void)
 
 
 	FrameIndex++;
+}
+
+void saveAnimation()
+{
+	std::ofstream file("dogAnimation.txt");
+
+	if (!file.is_open())
+	{
+		printf("Error al guardar la animacion\n");
+		return;
+	}
+
+	file << FrameIndex << "\n";
+
+	for (int i = 0; i < FrameIndex; i++)
+	{
+		file << KeyFrame[i].dogPosX << " "
+			<< KeyFrame[i].dogPosY << " "
+			<< KeyFrame[i].dogPosZ << " "
+			<< KeyFrame[i].rotDog << " "
+			<< KeyFrame[i].head << " "
+			<< KeyFrame[i].frontLeftLeg << " "
+			<< KeyFrame[i].frontRightLeg << " "
+			<< KeyFrame[i].backLeftLeg << " "
+			<< KeyFrame[i].backRightLeg << " "
+			<< KeyFrame[i].tail << " "
+			<< KeyFrame[i].bodyTilt << " "
+			<< KeyFrame[i].bodyRoll << " "
+			<< KeyFrame[i].headRoll << "\n";
+	}
+
+	file.close();
+	printf("Animacion guardada correctamente\n");
+}
+
+void loadAnimation()
+{
+	std::ifstream file("dogAnimation.txt");
+
+	if (!file.is_open())
+	{
+		printf("No se encontro una animacion guardada\n");
+		return;
+	}
+
+	int totalFrames;
+
+	if (!(file >> totalFrames) ||
+		totalFrames < 0 ||
+		totalFrames > MAX_FRAMES)
+	{
+		printf("Archivo de animacion no valido\n");
+		return;
+	}
+
+	FRAME loadedFrames[MAX_FRAMES] = {};
+
+	for (int i = 0; i < totalFrames; i++)
+	{
+		if (!(file >> loadedFrames[i].dogPosX
+			>> loadedFrames[i].dogPosY
+			>> loadedFrames[i].dogPosZ
+			>> loadedFrames[i].rotDog
+			>> loadedFrames[i].head
+			>> loadedFrames[i].frontLeftLeg
+			>> loadedFrames[i].frontRightLeg
+			>> loadedFrames[i].backLeftLeg
+			>> loadedFrames[i].backRightLeg
+			>> loadedFrames[i].tail
+			>> loadedFrames[i].bodyTilt
+			>> loadedFrames[i].bodyRoll
+			>> loadedFrames[i].headRoll))
+		{
+			printf("Error al leer los KeyFrames\n");
+			return;
+		}
+	}
+
+	for (int i = 0; i < totalFrames; i++)
+	{
+		KeyFrame[i] = loadedFrames[i];
+	}
+
+	FrameIndex = totalFrames;
+	play = false;
+	playIndex = 0;
+	i_curr_steps = 0;
+
+	if (FrameIndex > 0)
+	{
+		resetElements();
+	}
+
+	printf("Animacion cargada: %d KeyFrames\n", FrameIndex);
+}
+
+void clearAnimation()
+{
+	play = false;
+	FrameIndex = 0;
+	playIndex = 0;
+	i_curr_steps = 0;
+
+	// Limpiar los KeyFrames
+	for (int i = 0; i < MAX_FRAMES; i++)
+	{
+		KeyFrame[i] = FRAME{};
+	}
+
+	// Regresar al perro a su postura original
+	dogPosX = 0.0f;
+	dogPosY = 0.0f;
+	dogPosZ = 0.0f;
+
+	rotDog = 0.0f;
+	head = 0.0f;
+	tail = 0.0f;
+
+	frontLeftLeg = 0.0f;
+	frontRightLeg = 0.0f;
+	backLeftLeg = 0.0f;
+	backRightLeg = 0.0f;
+
+	bodyTilt = 0.0f;
+	bodyRoll = 0.0f;
+	headRoll = 0.0f;
+
+	printf("Animacion borrada. Perro reiniciado.\n");
 }
 
 void resetElements(void)
@@ -812,6 +942,24 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 		{
 			saveFrame();
 		}
+	}
+
+	// Guardar animacion en archivo
+	if (key == GLFW_KEY_P && action == GLFW_PRESS && !play)
+	{
+		saveAnimation();
+	}
+
+	// Cargar animacion desde archivo
+	if (key == GLFW_KEY_M && action == GLFW_PRESS)
+	{
+		loadAnimation();
+	}
+
+	// Borrar KeyFrames de memoria
+	if (key == GLFW_KEY_0 && action == GLFW_PRESS)
+	{
+		clearAnimation();
 	}
 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
