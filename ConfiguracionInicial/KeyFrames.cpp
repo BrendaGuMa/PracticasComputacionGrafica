@@ -125,7 +125,7 @@ float headRoll = 0.0f;
 float dogPosX , dogPosY , dogPosZ  ;
 
 #define MAX_FRAMES 30
-int i_max_steps = 500;
+int i_max_steps = 30;
 int i_curr_steps = 0;
 typedef struct _frame {
 
@@ -435,7 +435,7 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);*/
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Previo#12 - Brenda Guerra", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Practica#12 - Brenda Guerra", nullptr, nullptr);
 
 	if (nullptr == window)
 	{
@@ -446,6 +446,7 @@ int main()
 	}
 
 	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1);
 
 	glfwGetFramebufferSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
 
