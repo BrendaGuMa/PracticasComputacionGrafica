@@ -47,6 +47,8 @@ GLfloat lastX = WIDTH / 2.0;
 GLfloat lastY = HEIGHT / 2.0;
 bool keys[1024];
 bool firstMouse = true;
+// Seleccion del SkyBox
+int skyboxActual = 1;
 // Light attributes
 glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
 bool active;
@@ -623,6 +625,18 @@ int main()
 
 	GLuint cubemapTexture = TextureLoading::LoadCubemap(faces);
 
+	// Segundo SkyBox: paisaje nocturno
+	vector<const GLchar*> faces2;
+
+	faces2.push_back("SkyBox2/right.jpg");
+	faces2.push_back("SkyBox2/left.jpg");
+	faces2.push_back("SkyBox2/top.jpg");
+	faces2.push_back("SkyBox2/bottom.jpg");
+	faces2.push_back("SkyBox2/back.jpg");
+	faces2.push_back("SkyBox2/front.jpg");
+
+	GLuint cubemapTexture2 = TextureLoading::LoadCubemap(faces2);
+
 	glm::mat4 projection = glm::perspective(camera.GetZoom(), (GLfloat)SCREEN_WIDTH / (GLfloat)SCREEN_HEIGHT, 0.1f, 100.0f);
 
 	// Game loop
@@ -824,8 +838,22 @@ int main()
 		glUniformMatrix4fv(glGetUniformLocation(skyboxshader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
 		glBindVertexArray(skyboxVAO);
+
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		glUniform1i(
+			glGetUniformLocation(skyboxshader.Program, "skybox"), 1
+		);
+
+		// Seleccionar el entorno
+		if (skyboxActual == 1)
+		{
+			glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		}
+		else
+		{
+			glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture2);
+		}
+
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 		glDepthFunc(GL_LESS);
@@ -1058,6 +1086,19 @@ void DoMovement()
 // Is called whenever a key is pressed/released via GLFW
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
+	// Cambio de SkyBox mediante teclado
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+	{
+		skyboxActual = 1;
+		printf("SkyBox original activado\n");
+	}
+
+	if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
+	{
+		skyboxActual = 2;
+		printf("SkyBox nocturno activado\n");
+	}
+
 	if (key == GLFW_KEY_L && action == GLFW_PRESS)
 	{
 		if (!play && FrameIndex > 1)
