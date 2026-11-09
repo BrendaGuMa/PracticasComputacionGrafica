@@ -437,7 +437,7 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);*/
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Practica#Adicional - Brenda Guerra", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "PracticaAdicional - Brenda Guerra", nullptr, nullptr);
 
 	if (nullptr == window)
 	{
